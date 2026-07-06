@@ -14,3 +14,8 @@ type ComplaintResponse struct {
 	Status      string
 	CreatedAt   time.Time
 }
+
+type PaginationQuery struct {
+	Page  int
+	Limit int
+}
