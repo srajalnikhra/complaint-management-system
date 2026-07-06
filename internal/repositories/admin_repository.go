@@ -13,31 +13,39 @@ func NewAdminRepository() *AdminRepository {
 	return &AdminRepository{}
 }
 
-func (r *AdminRepository) GetAllComplaints(page, limit int, search string) ([]models.Complaint, error) {
+func (r *AdminRepository) GetAllComplaints(page, limit int, search, status string) ([]models.Complaint, error) {
 
 	offset := (page - 1) * limit
 
 	query := `
 	SELECT
-		id,
-		user_id,
-		title,
-		description,
-		status,
-		created_at,
-		updated_at
-	FROM complaints
-	WHERE
-		title ILIKE '%' || $1 || '%'
-		OR description ILIKE '%' || $1 || '%'
-	ORDER BY id DESC
-	LIMIT $2 OFFSET $3;
+    id,
+    user_id,
+    title,
+    description,
+    status,
+    created_at,
+    updated_at
+FROM complaints
+WHERE
+(
+    title ILIKE '%' || $1 || '%'
+    OR description ILIKE '%' || $1 || '%'
+)
+AND
+(
+    $2 = ''
+    OR status = $2
+)
+ORDER BY id DESC
+LIMIT $3 OFFSET $4;
 	`
 
 	rows, err := database.DB.Query(
 		context.Background(),
 		query,
 		search,
+		status,
 		limit,
 		offset,
 	)
