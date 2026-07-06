@@ -17,6 +17,7 @@ func GetAllComplaints(w http.ResponseWriter, r *http.Request) {
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 	search := r.URL.Query().Get("search")
+	status := r.URL.Query().Get("status")
 
 	if page <= 0 {
 		page = 1
@@ -26,7 +27,7 @@ func GetAllComplaints(w http.ResponseWriter, r *http.Request) {
 		limit = 10
 	}
 
-	complaints, err := adminService.GetAllComplaints(page, limit, search)
+	complaints, err := adminService.GetAllComplaints(page, limit, search, status)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
