@@ -14,7 +14,18 @@ var adminService = services.NewAdminService()
 
 func GetAllComplaints(w http.ResponseWriter, r *http.Request) {
 
-	complaints, err := adminService.GetAllComplaints()
+	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+
+	if page <= 0 {
+		page = 1
+	}
+
+	if limit <= 0 {
+		limit = 10
+	}
+
+	complaints, err := adminService.GetAllComplaints(page, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

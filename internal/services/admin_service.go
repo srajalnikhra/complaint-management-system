@@ -15,8 +15,8 @@ func NewAdminService() *AdminService {
 	}
 }
 
-func (s *AdminService) GetAllComplaints() ([]models.Complaint, error) {
-	return s.repo.GetAllComplaints()
+func (s *AdminService) GetAllComplaints(page, limit int) ([]models.Complaint, error) {
+	return s.repo.GetAllComplaints(page, limit)
 }
 
 func (s *AdminService) UpdateComplaintStatus(id int, status string) error {

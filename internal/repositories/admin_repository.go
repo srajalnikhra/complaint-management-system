@@ -13,7 +13,9 @@ func NewAdminRepository() *AdminRepository {
 	return &AdminRepository{}
 }
 
-func (r *AdminRepository) GetAllComplaints() ([]models.Complaint, error) {
+func (r *AdminRepository) GetAllComplaints(page, limit int) ([]models.Complaint, error) {
+
+	offset := (page - 1) * limit
 
 	query := `
 	SELECT
@@ -25,10 +27,16 @@ func (r *AdminRepository) GetAllComplaints() ([]models.Complaint, error) {
 		created_at,
 		updated_at
 	FROM complaints
-	ORDER BY id DESC;
+	ORDER BY id DESC
+	LIMIT $1 OFFSET $2;
 	`
 
-	rows, err := database.DB.Query(context.Background(), query)
+	rows, err := database.DB.Query(
+		context.Background(),
+		query,
+		limit,
+		offset,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -37,6 +45,7 @@ func (r *AdminRepository) GetAllComplaints() ([]models.Complaint, error) {
 	var complaints []models.Complaint
 
 	for rows.Next() {
+
 		var complaint models.Complaint
 
 		err := rows.Scan(
@@ -48,6 +57,7 @@ func (r *AdminRepository) GetAllComplaints() ([]models.Complaint, error) {
 			&complaint.CreatedAt,
 			&complaint.UpdatedAt,
 		)
+
 		if err != nil {
 			return nil, err
 		}
