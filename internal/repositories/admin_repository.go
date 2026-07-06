@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/srajalnikhra/complaint-management-system/internal/database"
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
@@ -13,33 +14,47 @@ func NewAdminRepository() *AdminRepository {
 	return &AdminRepository{}
 }
 
-func (r *AdminRepository) GetAllComplaints(page, limit int, search, status string) ([]models.Complaint, error) {
+func (r *AdminRepository) GetAllComplaints(page, limit int, search, status, sort, order string) ([]models.Complaint, error) {
 
 	offset := (page - 1) * limit
 
-	query := `
-	SELECT
-    id,
-    user_id,
-    title,
-    description,
-    status,
-    created_at,
-    updated_at
+	allowedSorts := map[string]bool{
+		"id":         true,
+		"created_at": true,
+		"updated_at": true,
+	}
+
+	if !allowedSorts[sort] {
+		sort = "id"
+	}
+
+	if order != "ASC" && order != "DESC" {
+		order = "DESC"
+	}
+
+	query := fmt.Sprintf(`
+SELECT
+	id,
+	user_id,
+	title,
+	description,
+	status,
+	created_at,
+	updated_at
 FROM complaints
 WHERE
 (
-    title ILIKE '%' || $1 || '%'
-    OR description ILIKE '%' || $1 || '%'
+	title ILIKE '%%' || $1 || '%%'
+	OR description ILIKE '%%' || $1 || '%%'
 )
 AND
 (
-    $2 = ''
-    OR status = $2
+	$2 = ''
+	OR status = $2
 )
-ORDER BY id DESC
+ORDER BY %s %s
 LIMIT $3 OFFSET $4;
-	`
+`, sort, order)
 
 	rows, err := database.DB.Query(
 		context.Background(),
