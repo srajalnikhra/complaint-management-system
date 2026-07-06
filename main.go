@@ -24,8 +24,9 @@ func main() {
 	routes.RegisterUserRoutes()
 	routes.RegisterProtectedRoutes()
 	routes.RegisterComplaintRoutes()
+	routes.RegisterAdminRoutes()
 
 	log.Printf("%s started on port %s", appConfig.Name, appConfig.Port)
 
-	log.Fatal(http.ListenAndServe(":"+appConfig.Port, nil))
+	log.Fatal(http.ListenAndServe("localhost:"+appConfig.Port, nil))
 }
