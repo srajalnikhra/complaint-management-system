@@ -8,6 +8,8 @@ import (
 
 	"github.com/srajalnikhra/complaint-management-system/internal/dto"
 	"github.com/srajalnikhra/complaint-management-system/internal/services"
+	"github.com/srajalnikhra/complaint-management-system/internal/utils"
+	"github.com/srajalnikhra/complaint-management-system/internal/validation"
 )
 
 var adminService = services.NewAdminService()
@@ -37,34 +39,49 @@ func GetAllComplaints(w http.ResponseWriter, r *http.Request) {
 
 	complaints, err := adminService.GetAllComplaints(page, limit, search, status, sort, order)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(complaints)
+	utils.Success(
+		w,
+		http.StatusOK,
+		"Complaints fetched successfully",
+		complaints,
+	)
 }
 
 func UpdateComplaintStatus(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(strings.TrimSuffix(strings.TrimPrefix(r.URL.Path, "/admin/complaints/"), "/status"))
 	if err != nil {
-		http.Error(w, "Invalid complaint ID", http.StatusBadRequest)
+		utils.Error(w, http.StatusBadRequest, "Invalid complaint ID")
 		return
 	}
 
 	var req dto.UpdateComplaintStatusRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid Request", http.StatusBadRequest)
+		utils.Error(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	msg := validation.ValidateComplaintStatus(req.Status)
+
+	if msg != "" {
+		utils.Error(w, http.StatusBadRequest, msg)
 		return
 	}
 
 	if err := adminService.UpdateComplaintStatus(id, req.Status); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Complaint status updated successfully"))
+	utils.Success(
+		w,
+		http.StatusOK,
+		"Complaint status updated successfully",
+		nil,
+	)
 }

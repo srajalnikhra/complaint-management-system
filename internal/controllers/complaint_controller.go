@@ -10,6 +10,8 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/dto"
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
 	"github.com/srajalnikhra/complaint-management-system/internal/services"
+	"github.com/srajalnikhra/complaint-management-system/internal/utils"
+	"github.com/srajalnikhra/complaint-management-system/internal/validation"
 )
 
 var complaintService = services.NewComplaintService()
@@ -19,15 +21,19 @@ func CreateComplaint(w http.ResponseWriter, r *http.Request) {
 	var req dto.CreateComplaintRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid Request", http.StatusBadRequest)
+		utils.Error(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
-	userIDStr := r.Context().Value("userID").(int)
+	msg := validation.ValidateComplaint(req.Title, req.Description)
+	if msg != "" {
+		utils.Error(w, http.StatusBadRequest, msg)
+		return
+	}
 
-	userID := userIDStr
-	fmt.Println("User ID From Context:", userIDStr)
-	fmt.Println("Converted User ID:", userID)
+	userID := r.Context().Value("userID").(int)
+
+	fmt.Println("User ID From Context:", userID)
 
 	complaint := models.Complaint{
 		UserID:      userID,
@@ -37,14 +43,16 @@ func CreateComplaint(w http.ResponseWriter, r *http.Request) {
 
 	if err := complaintService.Create(&complaint); err != nil {
 		fmt.Println("Create Complaint Error:", err)
-
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(complaint)
-
+	utils.Success(
+		w,
+		http.StatusCreated,
+		"Complaint created successfully",
+		complaint,
+	)
 }
 
 func GetMyComplaints(w http.ResponseWriter, r *http.Request) {
@@ -53,14 +61,13 @@ func GetMyComplaints(w http.ResponseWriter, r *http.Request) {
 
 	complaints, err := complaintService.GetByUserID(userID)
 	if err != nil {
-		http.Error(w, "Failed to fetch complaints", http.StatusInternalServerError)
+		utils.Error(w, http.StatusInternalServerError, "Failed to fetch complaints")
 		return
 	}
 
 	var response []dto.ComplaintResponse
 
 	for _, complaint := range complaints {
-
 		response = append(response, dto.ComplaintResponse{
 			ID:          complaint.ID,
 			Title:       complaint.Title,
@@ -70,8 +77,12 @@ func GetMyComplaints(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	utils.Success(
+		w,
+		http.StatusOK,
+		"Complaints fetched successfully",
+		response,
+	)
 }
 
 func GetComplaintByID(w http.ResponseWriter, r *http.Request) {
@@ -80,20 +91,20 @@ func GetComplaintByID(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid complaint id", http.StatusBadRequest)
+		utils.Error(w, http.StatusBadRequest, "Invalid complaint ID")
 		return
 	}
 
 	complaint, err := complaintService.GetByID(id)
 	if err != nil {
-		http.Error(w, "Complaint not found", http.StatusNotFound)
+		utils.Error(w, http.StatusNotFound, "Complaint not found")
 		return
 	}
 
 	userID := r.Context().Value("userID").(int)
 
 	if complaint.UserID != userID {
-		http.Error(w, "Forbidden", http.StatusForbidden)
+		utils.Error(w, http.StatusForbidden, "Forbidden")
 		return
 	}
 
@@ -105,14 +116,19 @@ func GetComplaintByID(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:   complaint.CreatedAt,
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	utils.Success(
+		w,
+		http.StatusOK,
+		"Complaint fetched successfully",
+		response,
+	)
 }
 
 func UpdateComplaint(w http.ResponseWriter, r *http.Request) {
+
 	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/complaints/"))
 	if err != nil {
-		http.Error(w, "Invalid complaint ID", http.StatusBadRequest)
+		utils.Error(w, http.StatusBadRequest, "Invalid complaint ID")
 		return
 	}
 
@@ -120,19 +136,25 @@ func UpdateComplaint(w http.ResponseWriter, r *http.Request) {
 
 	complaint, err := complaintService.GetByID(id)
 	if err != nil {
-		http.Error(w, "Complaint not found", http.StatusNotFound)
+		utils.Error(w, http.StatusNotFound, "Complaint not found")
 		return
 	}
 
 	if complaint.UserID != userID {
-		http.Error(w, "Forbidden", http.StatusForbidden)
+		utils.Error(w, http.StatusForbidden, "Forbidden")
 		return
 	}
 
 	var req dto.UpdateComplaintRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		utils.Error(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	msg := validation.ValidateComplaint(req.Title, req.Description)
+	if msg != "" {
+		utils.Error(w, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -140,19 +162,23 @@ func UpdateComplaint(w http.ResponseWriter, r *http.Request) {
 	complaint.Description = req.Description
 
 	if err := complaintService.Update(complaint); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(complaint)
+	utils.Success(
+		w,
+		http.StatusOK,
+		"Complaint updated successfully",
+		complaint,
+	)
 }
 
 func DeleteComplaint(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/complaints/"))
 	if err != nil {
-		http.Error(w, "Invalid complaint ID", http.StatusBadRequest)
+		utils.Error(w, http.StatusBadRequest, "Invalid complaint ID")
 		return
 	}
 
@@ -160,20 +186,24 @@ func DeleteComplaint(w http.ResponseWriter, r *http.Request) {
 
 	complaint, err := complaintService.GetByID(id)
 	if err != nil {
-		http.Error(w, "Complaint not found", http.StatusNotFound)
+		utils.Error(w, http.StatusNotFound, "Complaint not found")
 		return
 	}
 
 	if complaint.UserID != userID {
-		http.Error(w, "Forbidden", http.StatusForbidden)
+		utils.Error(w, http.StatusForbidden, "Forbidden")
 		return
 	}
 
 	if err := complaintService.Delete(id); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Complaint deleted successfully"))
+	utils.Success(
+		w,
+		http.StatusOK,
+		"Complaint deleted successfully",
+		nil,
+	)
 }

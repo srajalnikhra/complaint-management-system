@@ -7,6 +7,8 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/dto"
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
 	"github.com/srajalnikhra/complaint-management-system/internal/services"
+	"github.com/srajalnikhra/complaint-management-system/internal/utils"
+	"github.com/srajalnikhra/complaint-management-system/internal/validation"
 )
 
 type UserController struct {
@@ -20,11 +22,22 @@ func NewUserController() *UserController {
 }
 
 func (c *UserController) Register(w http.ResponseWriter, r *http.Request) {
+
 	var req dto.RegisterUserRequest
 
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		utils.Error(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	msg := validation.ValidateRegister(
+		req.Name,
+		req.Email,
+		req.Password,
+	)
+
+	if msg != "" {
+		utils.Error(w, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -35,12 +48,15 @@ func (c *UserController) Register(w http.ResponseWriter, r *http.Request) {
 		Role:     "user",
 	}
 
-	err = c.service.CreateUser(&user)
-	if err != nil {
-		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+	if err := c.service.CreateUser(&user); err != nil {
+		utils.Error(w, http.StatusInternalServerError, "Failed to create user")
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	utils.Success(
+		w,
+		http.StatusCreated,
+		"User registered successfully",
+		user,
+	)
 }
