@@ -74,14 +74,15 @@ func UpdateComplaintStatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := adminService.UpdateComplaintStatus(id, req.Status); err != nil {
+
+		if err == utils.ErrComplaintNotFound {
+			utils.Error(w, http.StatusNotFound, err.Error())
+			return
+		}
+
 		utils.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.Success(
-		w,
-		http.StatusOK,
-		"Complaint status updated successfully",
-		nil,
-	)
+	utils.Success(w, http.StatusOK, "Complaint status updated successfully", nil)
 }

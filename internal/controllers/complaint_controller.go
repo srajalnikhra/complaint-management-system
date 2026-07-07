@@ -97,7 +97,7 @@ func GetComplaintByID(w http.ResponseWriter, r *http.Request) {
 
 	complaint, err := complaintService.GetByID(id)
 	if err != nil {
-		utils.Error(w, http.StatusNotFound, "Complaint not found")
+		utils.Error(w, http.StatusNotFound, err.Error())
 		return
 	}
 
@@ -136,7 +136,7 @@ func UpdateComplaint(w http.ResponseWriter, r *http.Request) {
 
 	complaint, err := complaintService.GetByID(id)
 	if err != nil {
-		utils.Error(w, http.StatusNotFound, "Complaint not found")
+		utils.Error(w, http.StatusNotFound, err.Error())
 		return
 	}
 
@@ -186,7 +186,7 @@ func DeleteComplaint(w http.ResponseWriter, r *http.Request) {
 
 	complaint, err := complaintService.GetByID(id)
 	if err != nil {
-		utils.Error(w, http.StatusNotFound, "Complaint not found")
+		utils.Error(w, http.StatusNotFound, err.Error())
 		return
 	}
 
