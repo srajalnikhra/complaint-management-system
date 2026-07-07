@@ -49,7 +49,13 @@ func (c *UserController) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := c.service.CreateUser(&user); err != nil {
-		utils.Error(w, http.StatusInternalServerError, "Failed to create user")
+
+		if err == utils.ErrUserAlreadyExists {
+			utils.Error(w, http.StatusConflict, err.Error())
+			return
+		}
+
+		utils.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 

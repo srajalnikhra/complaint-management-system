@@ -17,6 +17,7 @@ func NewUserService() *UserService {
 }
 
 func (s *UserService) CreateUser(user *models.User) error {
+
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return err

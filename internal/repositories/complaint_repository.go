@@ -5,6 +5,7 @@ import (
 
 	"github.com/srajalnikhra/complaint-management-system/internal/database"
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
+	"github.com/srajalnikhra/complaint-management-system/internal/utils"
 )
 
 type ComplaintRepository struct{}
@@ -119,7 +120,7 @@ func (r *ComplaintRepository) GetByID(id int) (*models.Complaint, error) {
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, utils.ErrComplaintNotFound
 	}
 
 	return &complaint, nil

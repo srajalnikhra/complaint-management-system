@@ -6,6 +6,7 @@ import (
 
 	"github.com/srajalnikhra/complaint-management-system/internal/database"
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
+	"github.com/srajalnikhra/complaint-management-system/internal/utils"
 )
 
 type AdminRepository struct{}
@@ -104,12 +105,20 @@ func (r *AdminRepository) UpdateComplaintStatus(id int, status string) error {
 	WHERE id = $2;
 	`
 
-	_, err := database.DB.Exec(
+	result, err := database.DB.Exec(
 		context.Background(),
 		query,
 		status,
 		id,
 	)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return utils.ErrComplaintNotFound
+	}
+
+	return nil
 }
