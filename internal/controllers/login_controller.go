@@ -6,6 +6,8 @@ import (
 
 	"github.com/srajalnikhra/complaint-management-system/internal/dto"
 	"github.com/srajalnikhra/complaint-management-system/internal/services"
+	"github.com/srajalnikhra/complaint-management-system/internal/utils"
+	"github.com/srajalnikhra/complaint-management-system/internal/validation"
 )
 
 type LoginController struct {
@@ -23,16 +25,30 @@ func (c *LoginController) Login(w http.ResponseWriter, r *http.Request) {
 	var req dto.LoginRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "Invalid Request", http.StatusBadRequest)
+		utils.Error(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	msg := validation.ValidateLogin(
+		req.Email,
+		req.Password,
+	)
+
+	if msg != "" {
+		utils.Error(w, http.StatusBadRequest, msg)
 		return
 	}
 
 	user, err := c.service.Login(req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		utils.Error(w, http.StatusUnauthorized, err.Error())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	utils.Success(
+		w,
+		http.StatusOK,
+		"Login successful",
+		user,
+	)
 }
