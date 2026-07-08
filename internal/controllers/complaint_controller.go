@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -33,8 +33,6 @@ func CreateComplaint(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.Context().Value("userID").(int)
 
-	fmt.Println("User ID From Context:", userID)
-
 	complaint := models.Complaint{
 		UserID:      userID,
 		Title:       req.Title,
@@ -42,7 +40,7 @@ func CreateComplaint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := complaintService.Create(&complaint); err != nil {
-		fmt.Println("Create Complaint Error:", err)
+		log.Printf("Create Complaint Error: %v", err)
 		utils.Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
