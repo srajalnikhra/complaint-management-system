@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 
+	"github.com/srajalnikhra/complaint-management-system/internal/models"
 	"github.com/srajalnikhra/complaint-management-system/internal/utils"
 )
 
@@ -19,7 +20,7 @@ func AdminMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		if role != "ADMIN" {
+		if role != models.RoleAdmin {
 			utils.Error(
 				w,
 				http.StatusForbidden,
