@@ -6,6 +6,7 @@ import (
 
 	"github.com/srajalnikhra/complaint-management-system/internal/config"
 	"github.com/srajalnikhra/complaint-management-system/internal/database"
+	"github.com/srajalnikhra/complaint-management-system/internal/middleware"
 	"github.com/srajalnikhra/complaint-management-system/internal/routes"
 )
 
@@ -29,5 +30,7 @@ func main() {
 
 	log.Printf("%s started on port %s", appConfig.Name, appConfig.Port)
 
-	log.Fatal(http.ListenAndServe("localhost:"+appConfig.Port, nil))
+	handler := middleware.CORSMiddleware(http.DefaultServeMux)
+
+	log.Fatal(http.ListenAndServe("localhost:"+appConfig.Port, handler))
 }
