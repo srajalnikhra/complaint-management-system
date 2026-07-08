@@ -30,7 +30,11 @@ func main() {
 
 	log.Printf("%s started on port %s", appConfig.Name, appConfig.Port)
 
-	handler := middleware.CORSMiddleware(http.DefaultServeMux)
+	handler := middleware.LoggingMiddleware(
+		middleware.CORSMiddleware(
+			http.DefaultServeMux,
+		),
+	)
 
 	log.Fatal(http.ListenAndServe("localhost:"+appConfig.Port, handler))
 }
