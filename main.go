@@ -25,6 +25,7 @@ func main() {
 	routes.RegisterProtectedRoutes()
 	routes.RegisterComplaintRoutes()
 	routes.RegisterAdminRoutes()
+	routes.RegisterHealthRoutes()
 
 	log.Printf("%s started on port %s", appConfig.Name, appConfig.Port)
 
