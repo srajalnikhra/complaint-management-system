@@ -14,7 +14,11 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		authHeader := r.Header.Get("Authorization")
 
 		if authHeader == "" {
-			http.Error(w, "missing token", http.StatusUnauthorized)
+			utils.Error(
+				w,
+				http.StatusUnauthorized,
+				"Missing token",
+			)
 			return
 		}
 
@@ -22,7 +26,11 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		claims, err := utils.ValidateJWT(token)
 		if err != nil {
-			http.Error(w, "invalid token", http.StatusUnauthorized)
+			utils.Error(
+				w,
+				http.StatusUnauthorized,
+				"Invalid token",
+			)
 			return
 		}
 
