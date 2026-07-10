@@ -9,7 +9,14 @@ import (
 
 func RegisterComplaintRoutes() {
 
-	http.Handle("/complaints", middleware.AuthMiddleware(http.HandlerFunc(controllers.CreateComplaint)))
+	http.Handle(
+		"/complaints",
+		middleware.AuthMiddleware(
+			middleware.UserMiddleware(
+				http.HandlerFunc(controllers.CreateComplaint),
+			),
+		),
+	)
 
 	http.Handle("/my-complaints", middleware.AuthMiddleware(http.HandlerFunc(controllers.GetMyComplaints)))
 

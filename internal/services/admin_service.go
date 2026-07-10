@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/srajalnikhra/complaint-management-system/internal/dto"
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
 	"github.com/srajalnikhra/complaint-management-system/internal/repositories"
 )
@@ -21,4 +22,20 @@ func (s *AdminService) GetAllComplaints(page, limit int, search, status, sort, o
 
 func (s *AdminService) UpdateComplaintStatus(id int, status string) error {
 	return s.repo.UpdateComplaintStatus(id, status)
+}
+
+func (s *AdminService) GetAllUsers() ([]dto.AdminUserResponse, error) {
+	return s.repo.GetAllUsers()
+}
+
+func (s *AdminService) UpdateUserRole(id int, role string) error {
+	return s.repo.UpdateUserRole(id, role)
+}
+
+func (s *AdminService) UpdateUserStatus(id int, isActive bool) error {
+	return s.repo.UpdateUserStatus(id, isActive)
+}
+
+func (s *AdminService) DeleteUser(id int) error {
+	return s.repo.DeleteUser(id)
 }
