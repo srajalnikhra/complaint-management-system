@@ -45,3 +45,43 @@ func (r *UserRepository) Create(user *models.User) error {
 
 	return nil
 }
+
+func (r *UserRepository) GetByID(id int) (*models.User, error) {
+
+	user := &models.User{}
+
+	query := `
+	SELECT
+		id,
+		name,
+		email,
+		password,
+		role,
+		is_active,
+		created_at,
+		updated_at
+	FROM users
+	WHERE id = $1;
+	`
+
+	err := database.DB.QueryRow(
+		context.Background(),
+		query,
+		id,
+	).Scan(
+		&user.ID,
+		&user.Name,
+		&user.Email,
+		&user.Password,
+		&user.Role,
+		&user.IsActive,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/srajalnikhra/complaint-management-system/internal/repositories"
 	"github.com/srajalnikhra/complaint-management-system/internal/utils"
 )
 
@@ -30,6 +31,27 @@ func AuthMiddleware(next http.Handler) http.Handler {
 				w,
 				http.StatusUnauthorized,
 				"Invalid token",
+			)
+			return
+		}
+
+		userRepo := repositories.NewUserRepository()
+
+		user, err := userRepo.GetByID(claims.UserID)
+		if err != nil {
+			utils.Error(
+				w,
+				http.StatusUnauthorized,
+				"Invalid user",
+			)
+			return
+		}
+
+		if !user.IsActive {
+			utils.Error(
+				w,
+				http.StatusUnauthorized,
+				"Your account has been deactivated",
 			)
 			return
 		}

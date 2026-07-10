@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/srajalnikhra/complaint-management-system/internal/database"
+	"github.com/srajalnikhra/complaint-management-system/internal/dto"
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
 	"github.com/srajalnikhra/complaint-management-system/internal/utils"
 )
@@ -118,6 +119,130 @@ func (r *AdminRepository) UpdateComplaintStatus(id int, status string) error {
 
 	if result.RowsAffected() == 0 {
 		return utils.ErrComplaintNotFound
+	}
+
+	return nil
+}
+
+func (r *AdminRepository) GetAllUsers() ([]dto.AdminUserResponse, error) {
+
+	query := `
+	SELECT
+		id,
+		name,
+		email,
+		role,
+		is_active,
+		created_at,
+		updated_at
+	FROM users
+	ORDER BY id ASC;
+	`
+
+	rows, err := database.DB.Query(
+		context.Background(),
+		query,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []dto.AdminUserResponse
+
+	for rows.Next() {
+
+		var user dto.AdminUserResponse
+
+		err := rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Email,
+			&user.Role,
+			&user.IsActive,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (r *AdminRepository) UpdateUserRole(id int, role string) error {
+	query := `
+		UPDATE users
+		SET role = $1,
+		    updated_at = NOW()
+		WHERE id = $2;
+	`
+
+	result, err := database.DB.Exec(
+		context.Background(),
+		query,
+		role,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return utils.ErrUserNotFound
+	}
+
+	return nil
+}
+
+func (r *AdminRepository) UpdateUserStatus(id int, isActive bool) error {
+	query := `
+		UPDATE users
+		SET is_active = $1,
+		    updated_at = NOW()
+		WHERE id = $2;
+	`
+
+	result, err := database.DB.Exec(
+		context.Background(),
+		query,
+		isActive,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return utils.ErrUserNotFound
+	}
+
+	return nil
+}
+
+func (r *AdminRepository) DeleteUser(id int) error {
+
+	query := `
+	DELETE FROM users
+	WHERE id = $1;
+	`
+
+	result, err := database.DB.Exec(
+		context.Background(),
+		query,
+		id,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return utils.ErrUserNotFound
 	}
 
 	return nil

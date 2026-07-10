@@ -3,6 +3,8 @@ package validation
 import (
 	"net/mail"
 	"strings"
+
+	"github.com/srajalnikhra/complaint-management-system/internal/models"
 )
 
 func ValidateRegister(name, email, password string) string {
@@ -70,4 +72,12 @@ func ValidateComplaintStatus(status string) string {
 	default:
 		return "Invalid complaint status"
 	}
+}
+
+func ValidateUserRole(role string) string {
+	if role != models.RoleUser && role != models.RoleAdmin {
+		return "role must be either user or admin"
+	}
+
+	return ""
 }

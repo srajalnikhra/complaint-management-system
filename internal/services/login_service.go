@@ -30,6 +30,10 @@ func (s *LoginService) Login(req dto.LoginRequest) (*models.User, error) {
 		return nil, errors.New("invalid email or password")
 	}
 
+	if !user.IsActive {
+		return nil, errors.New("your account has been deactivated")
+	}
+
 	token, err := utils.GenerateJWT(user)
 	if err != nil {
 		return nil, err
