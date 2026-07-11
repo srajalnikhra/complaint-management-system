@@ -166,7 +166,7 @@ These features must be completed before starting documentation or frontend devel
 
 ### Notifications
 
-- [ ] Email Notification on Complaint Status Update
+- [✅] Email Notification on Complaint Status Update
 
 ---
 
@@ -177,6 +177,9 @@ These features must be completed before starting documentation or frontend devel
 - [✅] Repository & Service Cleanup
 - [✅] Consistent JSON Responses
 - [✅] Bootstrap Default Admin
+- [ ] Forgot Password (OTP)
+- [ ] Refresh Token
+- [ ] Rate Limiting
 
 ---
 
@@ -194,7 +197,7 @@ After the backend is complete, document and test everything.
 
 - [ ] Swagger / OpenAPI
 - [ ] API Documentation
-- [ ] Better README
+- [ ] Better README and Codebase Comments
 - [ ] Architecture Documentation
 - [ ] Database Documentation
 

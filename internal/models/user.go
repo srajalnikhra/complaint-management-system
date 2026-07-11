@@ -9,7 +9,12 @@ type User struct {
 	Password  string
 	Role      string
 	IsActive  bool
+
+	OTPHash      string
+	OTPExpiresAt *time.Time
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
+
 	Token string `json:"token,omitempty"`
 }

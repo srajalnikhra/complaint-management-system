@@ -19,26 +19,18 @@ func SendComplaintStatusEmail(toEmail, userName, complaintTitle, status string) 
 		appConfig.SMTPHost,
 	)
 
-	subject := "Complaint Management System | Complaint Status Updated"
+	subject := "Complaint Status Updated"
 
 	body := fmt.Sprintf(
 		`Hi %s,
 
-Your complaint status has been updated successfully.
+Your complaint has been updated.
 
---------------------------------------------
+Complaint: %s
 
-Complaint Title:
-%s
+New Status: %s
 
-Current Status:
-%s
-
---------------------------------------------
-
-Thank you for using Complaint Management System.
-
-Regards,
+Thank you,
 CMS Backend Team`,
 		userName,
 		complaintTitle,
@@ -68,6 +60,65 @@ CMS Backend Team`,
 	}
 
 	log.Println("Complaint status email sent successfully")
+
+	return nil
+}
+
+func SendOTPEmail(toEmail, userName, otp string) error {
+
+	appConfig := config.LoadAppConfig()
+
+	auth := smtp.PlainAuth(
+		"",
+		appConfig.SMTPEmail,
+		appConfig.SMTPPassword,
+		appConfig.SMTPHost,
+	)
+
+	subject := "Complaint Management System | Password Reset OTP"
+
+	body := fmt.Sprintf(
+		`Hi %s,
+
+We received a request to reset your password.
+
+Your OTP is:
+
+%s
+
+This OTP is valid for 10 minutes.
+
+If you didn't request this request, please ignore this email.
+
+Regards,
+CMS Backend Team`,
+		userName,
+		otp,
+	)
+
+	message := []byte(
+		"Subject: " + subject + "\r\n" +
+			"MIME-Version: 1.0\r\n" +
+			"Content-Type: text/plain; charset=UTF-8\r\n\r\n" +
+			body,
+	)
+
+	address := appConfig.SMTPHost + ":" + appConfig.SMTPPort
+
+	err := smtp.SendMail(
+		address,
+		auth,
+		appConfig.SMTPEmail,
+		[]string{toEmail},
+		message,
+	)
+
+	if err != nil {
+		log.Println("Failed to send OTP email:", err)
+		return err
+	}
+
+	log.Println("OTP email sent successfully")
 
 	return nil
 }
