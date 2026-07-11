@@ -21,7 +21,29 @@ func (s *AdminService) GetAllComplaints(page, limit int, search, status, sort, o
 }
 
 func (s *AdminService) UpdateComplaintStatus(id int, status string) error {
-	return s.repo.UpdateComplaintStatus(id, status)
+
+	err := s.repo.UpdateComplaintStatus(id, status)
+	if err != nil {
+		return err
+	}
+
+	data, err := s.repo.GetComplaintEmailData(id)
+	if err != nil {
+		return nil
+	}
+
+	err = SendComplaintStatusEmail(
+		data.UserEmail,
+		data.UserName,
+		data.ComplaintTitle,
+		data.Status,
+	)
+
+	if err != nil {
+		return nil
+	}
+
+	return nil
 }
 
 func (s *AdminService) GetAllUsers() ([]dto.AdminUserResponse, error) {
