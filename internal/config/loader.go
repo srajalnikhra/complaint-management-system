@@ -19,6 +19,11 @@ func LoadAppConfig() AppConfig {
 		Name: os.Getenv("APP_NAME"),
 		Env:  os.Getenv("APP_ENV"),
 		Port: os.Getenv("APP_PORT"),
+
+		SMTPHost:     os.Getenv("SMTP_HOST"),
+		SMTPPort:     os.Getenv("SMTP_PORT"),
+		SMTPEmail:    os.Getenv("SMTP_EMAIL"),
+		SMTPPassword: os.Getenv("SMTP_PASSWORD"),
 	}
 }
 

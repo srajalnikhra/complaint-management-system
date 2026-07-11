@@ -247,3 +247,75 @@ func (r *AdminRepository) DeleteUser(id int) error {
 
 	return nil
 }
+
+func (r *AdminRepository) GetComplaintByID(id int) (*models.Complaint, error) {
+
+	complaint := &models.Complaint{}
+
+	query := `
+	SELECT
+		id,
+		user_id,
+		title,
+		description,
+		status,
+		created_at,
+		updated_at
+	FROM complaints
+	WHERE id = $1;
+	`
+
+	err := database.DB.QueryRow(
+		context.Background(),
+		query,
+		id,
+	).Scan(
+		&complaint.ID,
+		&complaint.UserID,
+		&complaint.Title,
+		&complaint.Description,
+		&complaint.Status,
+		&complaint.CreatedAt,
+		&complaint.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return complaint, nil
+}
+
+func (r *AdminRepository) GetComplaintEmailData(id int) (*dto.ComplaintEmailData, error) {
+
+	query := `
+	SELECT
+		u.name,
+		u.email,
+		c.title,
+		c.status
+	FROM complaints c
+	INNER JOIN users u
+		ON c.user_id = u.id
+	WHERE c.id = $1;
+	`
+
+	data := &dto.ComplaintEmailData{}
+
+	err := database.DB.QueryRow(
+		context.Background(),
+		query,
+		id,
+	).Scan(
+		&data.UserName,
+		&data.UserEmail,
+		&data.ComplaintTitle,
+		&data.Status,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
