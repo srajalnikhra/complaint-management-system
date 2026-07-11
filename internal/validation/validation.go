@@ -81,3 +81,53 @@ func ValidateUserRole(role string) string {
 
 	return ""
 }
+
+func ValidateForgotPassword(email string) string {
+
+	if strings.TrimSpace(email) == "" {
+		return "Email is required"
+	}
+
+	_, err := mail.ParseAddress(email)
+	if err != nil {
+		return "Invalid email address"
+	}
+
+	return ""
+}
+
+func ValidateVerifyOTP(email, otp string) string {
+
+	if msg := ValidateForgotPassword(email); msg != "" {
+		return msg
+	}
+
+	if strings.TrimSpace(otp) == "" {
+		return "OTP is required"
+	}
+
+	if len(otp) != 6 {
+		return "OTP must be 6 digits"
+	}
+
+	return ""
+}
+
+func ValidateResetPassword(email, otp, password string) string {
+
+	if msg := ValidateVerifyOTP(email, otp); msg != "" {
+		return msg
+	}
+
+	if strings.TrimSpace(password) == "" {
+		return "Password is required"
+	}
+
+	if len(password) < 6 {
+		return "Password must be at least 6 characters long"
+	}
+
+	return ""
+}
+
+

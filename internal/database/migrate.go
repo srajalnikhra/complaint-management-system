@@ -24,6 +24,17 @@ func RunMigrations() {
 		log.Fatal("Failed to run migrations:", err)
 	}
 
+	alterUsers := `
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS otp_hash TEXT,
+ADD COLUMN IF NOT EXISTS otp_expires_at TIMESTAMPTZ;
+`
+
+	_, err = DB.Exec(context.Background(), alterUsers)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	log.Println("Database migrations completed successfully")
 
 	complaintsTable := `
