@@ -129,5 +129,3 @@ func ValidateResetPassword(email, otp, password string) string {
 
 	return ""
 }
-
-

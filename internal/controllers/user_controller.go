@@ -45,7 +45,7 @@ func (c *UserController) Register(w http.ResponseWriter, r *http.Request) {
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
-		Role: models.RoleUser,
+		Role:     models.RoleUser,
 	}
 
 	if err := c.service.CreateUser(&user); err != nil {
