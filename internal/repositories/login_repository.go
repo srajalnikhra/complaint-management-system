@@ -135,4 +135,3 @@ func (r *LoginRepository) UpdatePassword(email, hashedPassword string) error {
 
 	return err
 }
-

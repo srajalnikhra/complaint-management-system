@@ -177,7 +177,7 @@ These features must be completed before starting documentation or frontend devel
 - [✅] Repository & Service Cleanup
 - [✅] Consistent JSON Responses
 - [✅] Bootstrap Default Admin
-- [ ] Forgot Password (OTP)
+- [✅] Forgot Password (OTP)
 - [ ] Refresh Token
 - [ ] Rate Limiting
 
