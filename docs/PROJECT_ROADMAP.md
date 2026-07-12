@@ -179,6 +179,7 @@ These features must be completed before starting documentation or frontend devel
 - [✅] Bootstrap Default Admin
 - [✅] Forgot Password (OTP)
 - [✅] Rate Limiting
+- [✅] Graceful Shutdown
 
 ---
 
