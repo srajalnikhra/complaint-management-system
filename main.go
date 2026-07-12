@@ -20,6 +20,7 @@ func main() {
 	database.Initialize(dbConfig)
 
 	routes.RegisterRoutes()
+	go middleware.StartRateLimiterCleanup()
 
 	handler := middleware.LoggingMiddleware(
 		middleware.CORSMiddleware(

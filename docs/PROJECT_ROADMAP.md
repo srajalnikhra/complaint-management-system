@@ -178,8 +178,7 @@ These features must be completed before starting documentation or frontend devel
 - [✅] Consistent JSON Responses
 - [✅] Bootstrap Default Admin
 - [✅] Forgot Password (OTP)
-- [ ] Refresh Token
-- [ ] Rate Limiting
+- [✅] Rate Limiting
 
 ---
 
