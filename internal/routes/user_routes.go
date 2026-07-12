@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/srajalnikhra/complaint-management-system/internal/controllers"
+	"github.com/srajalnikhra/complaint-management-system/internal/middleware"
 )
 
 func RegisterUserRoutes() {
@@ -12,8 +13,31 @@ func RegisterUserRoutes() {
 	loginController := controllers.NewLoginController()
 
 	http.HandleFunc("/register", userController.Register)
-	http.HandleFunc("/login", loginController.Login)
-	http.HandleFunc("/forgot-password", loginController.ForgotPassword)
-	http.HandleFunc("/verify-otp", loginController.VerifyOTP)
-	http.HandleFunc("/reset-password", loginController.ResetPassword)
+	http.Handle(
+		"/login",
+		middleware.RateLimitMiddleware(
+			http.HandlerFunc(loginController.Login),
+		),
+	)
+
+	http.Handle(
+		"/forgot-password",
+		middleware.RateLimitMiddleware(
+			http.HandlerFunc(loginController.ForgotPassword),
+		),
+	)
+
+	http.Handle(
+		"/verify-otp",
+		middleware.RateLimitMiddleware(
+			http.HandlerFunc(loginController.VerifyOTP),
+		),
+	)
+
+	http.Handle(
+		"/reset-password",
+		middleware.RateLimitMiddleware(
+			http.HandlerFunc(loginController.ResetPassword),
+		),
+	)
 }
