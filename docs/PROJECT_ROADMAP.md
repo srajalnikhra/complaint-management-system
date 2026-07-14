@@ -134,8 +134,6 @@ Advanced Features
 
 ### Development
 
-- [✅] Dockerfile
-- [✅] Docker Compose
 - [✅] Layered Architecture
 - [✅] Feature Branch Workflow
 - [✅] Pull Request Workflow
@@ -195,11 +193,11 @@ After the backend is complete, document and test everything.
 
 ### Documentation
 
-- [ ] Swagger / OpenAPI
-- [ ] API Documentation
-- [ ] Better README and Codebase Comments
-- [ ] Architecture Documentation
-- [ ] Database Documentation
+- [✅] Swagger / OpenAPI
+- [✅] API Documentation
+- [✅] Better README and Codebase Comments
+- [✅] Architecture Documentation
+- [✅] Database Documentation
 
 ---
 
@@ -224,6 +222,7 @@ Deploy the complete backend before starting frontend development.
 
 ### Deployment
 
+- [ ] Dockerfile & Docker Compose (Initialize and implement Docker)
 - [ ] Deploy PostgreSQL Database
 - [ ] Deploy Go Backend
 - [ ] Configure Environment Variables

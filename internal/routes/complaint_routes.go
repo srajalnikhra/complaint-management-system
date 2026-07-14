@@ -13,12 +13,23 @@ func RegisterComplaintRoutes() {
 		"/complaints",
 		middleware.AuthMiddleware(
 			middleware.UserMiddleware(
-				http.HandlerFunc(controllers.CreateComplaint),
+				http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+					switch r.Method {
+
+					case http.MethodPost:
+						controllers.CreateComplaint(w, r)
+
+					case http.MethodGet:
+						controllers.GetMyComplaints(w, r)
+
+					default:
+						http.NotFound(w, r)
+					}
+				}),
 			),
 		),
 	)
-
-	http.Handle("/my-complaints", middleware.AuthMiddleware(http.HandlerFunc(controllers.GetMyComplaints)))
 
 	http.Handle("/complaints/", middleware.AuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 

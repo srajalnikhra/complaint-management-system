@@ -6,4 +6,5 @@ func RegisterRoutes() {
 	RegisterComplaintRoutes()
 	RegisterAdminRoutes()
 	RegisterHealthRoutes()
+	RegisterSwaggerRoutes()
 }

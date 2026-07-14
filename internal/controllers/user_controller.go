@@ -21,6 +21,19 @@ func NewUserController() *UserController {
 	}
 }
 
+// Register godoc
+//
+// @Summary Register a new user
+// @Description Create a new user account
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body dto.RegisterUserRequest true "Register Request"
+// @Success 201 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Failure 409 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /register [post]
 func (c *UserController) Register(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.RegisterUserRequest

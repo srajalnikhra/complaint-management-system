@@ -1,3 +1,25 @@
+// @title Complaint Management System API
+// @version 1.0
+// @description Complaint Management System Backend API
+// @host localhost:8080
+// @BasePath /
+//
+// @tag.name Health
+// @tag.description Health check endpoints
+//
+// @tag.name Authentication
+// @tag.description Authentication and account recovery
+//
+// @tag.name Complaints
+// @tag.description Complaint management endpoints
+//
+// @tag.name Admin
+// @tag.description Administrator operations
+//
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+
 package main
 
 import (
@@ -10,6 +32,7 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/srajalnikhra/complaint-management-system/docs"
 	"github.com/srajalnikhra/complaint-management-system/internal/config"
 	"github.com/srajalnikhra/complaint-management-system/internal/database"
 	"github.com/srajalnikhra/complaint-management-system/internal/middleware"
