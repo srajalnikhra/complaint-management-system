@@ -27,7 +27,7 @@ func RegisterAdminRoutes() {
 
 					switch r.Method {
 
-					case http.MethodPut:
+					case http.MethodPatch:
 						controllers.UpdateComplaintStatus(w, r)
 
 					default:

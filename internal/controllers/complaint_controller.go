@@ -16,6 +16,20 @@ import (
 
 var complaintService = services.NewComplaintService()
 
+// CreateComplaint godoc
+//
+// @Summary Create Complaint
+// @Description Create a new complaint
+// @Tags Complaints
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.CreateComplaintRequest true "Complaint Details"
+// @Success 201 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /complaints [post]
 func CreateComplaint(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.CreateComplaintRequest
@@ -53,6 +67,17 @@ func CreateComplaint(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// GetMyComplaints godoc
+//
+// @Summary Get My Complaints
+// @Description Get all complaints created by the logged-in user
+// @Tags Complaints
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /complaints [get]
 func GetMyComplaints(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.Context().Value("userID").(int)
@@ -83,6 +108,20 @@ func GetMyComplaints(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// GetComplaintByID godoc
+//
+// @Summary Get Complaint By ID
+// @Description Get a complaint by its ID
+// @Tags Complaints
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Complaint ID"
+// @Success 200 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Failure 403 {object} utils.APIResponse
+// @Failure 404 {object} utils.APIResponse
+// @Router /complaints/{id} [get]
 func GetComplaintByID(w http.ResponseWriter, r *http.Request) {
 
 	idStr := strings.TrimPrefix(r.URL.Path, "/complaints/")
@@ -122,6 +161,23 @@ func GetComplaintByID(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// UpdateComplaint godoc
+//
+// @Summary Update Complaint
+// @Description Update an existing complaint
+// @Tags Complaints
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Complaint ID"
+// @Param request body dto.UpdateComplaintRequest true "Updated Complaint"
+// @Success 200 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Failure 403 {object} utils.APIResponse
+// @Failure 404 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /complaints/{id} [put]
 func UpdateComplaint(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/complaints/"))
@@ -172,6 +228,21 @@ func UpdateComplaint(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// DeleteComplaint godoc
+//
+// @Summary Delete Complaint
+// @Description Delete a complaint by ID
+// @Tags Complaints
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Complaint ID"
+// @Success 200 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Failure 403 {object} utils.APIResponse
+// @Failure 404 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /complaints/{id} [delete]
 func DeleteComplaint(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(strings.TrimPrefix(r.URL.Path, "/complaints/"))

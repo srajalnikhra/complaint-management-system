@@ -20,6 +20,18 @@ func NewLoginController() *LoginController {
 	}
 }
 
+// Login godoc
+//
+// @Summary Login user
+// @Description Login using email and password
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body dto.LoginRequest true "Login Request"
+// @Success 200 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Router /login [post]
 func (c *LoginController) Login(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.LoginRequest
@@ -53,6 +65,17 @@ func (c *LoginController) Login(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// ForgotPassword godoc
+//
+// @Summary Forgot Password
+// @Description Send OTP to registered email
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body dto.ForgotPasswordRequest true "Forgot Password Request"
+// @Success 200 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Router /forgot-password [post]
 func (c *LoginController) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.ForgotPasswordRequest
@@ -83,6 +106,17 @@ func (c *LoginController) ForgotPassword(w http.ResponseWriter, r *http.Request)
 	)
 }
 
+// VerifyOTP godoc
+//
+// @Summary Verify OTP
+// @Description Verify OTP sent to email
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body dto.VerifyOTPRequest true "Verify OTP Request"
+// @Success 200 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Router /verify-otp [post]
 func (c *LoginController) VerifyOTP(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.VerifyOTPRequest
@@ -111,6 +145,17 @@ func (c *LoginController) VerifyOTP(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
+// ResetPassword godoc
+//
+// @Summary Reset Password
+// @Description Reset password using OTP
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body dto.ResetPasswordRequest true "Reset Password Request"
+// @Success 200 {object} utils.APIResponse
+// @Failure 400 {object} utils.APIResponse
+// @Router /reset-password [post]
 func (c *LoginController) ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.ResetPasswordRequest
