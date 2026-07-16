@@ -57,11 +57,16 @@ func (c *LoginController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := dto.LoginResponse{
+		User:  dto.ToUserResponse(user),
+		Token: user.Token,
+	}
+
 	utils.Success(
 		w,
 		http.StatusOK,
 		"Login successful",
-		user,
+		response,
 	)
 }
 

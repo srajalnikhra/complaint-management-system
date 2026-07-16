@@ -72,10 +72,20 @@ func (c *UserController) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := dto.UserResponse{
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		Role:      string(user.Role),
+		IsActive:  user.IsActive,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+	}
+
 	utils.Success(
 		w,
 		http.StatusCreated,
 		"User registered successfully",
-		user,
+		response,
 	)
 }
