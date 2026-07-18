@@ -7,12 +7,17 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/middleware"
 )
 
+// RegisterUserRoutes declares user management, authentication, and password reset endpoints.
 func RegisterUserRoutes() {
 
+	// Create controllers dependencies.
 	userController := controllers.NewUserController()
 	loginController := controllers.NewLoginController()
 
+	// Register public signup router endpoint.
 	http.HandleFunc("/register", userController.Register)
+
+	// Register authentication and credentials validation endpoint wrapped in the RateLimiter.
 	http.Handle(
 		"/login",
 		middleware.RateLimitMiddleware(
@@ -20,6 +25,7 @@ func RegisterUserRoutes() {
 		),
 	)
 
+	// Register OTP password recovery pathways protected against abuse.
 	http.Handle(
 		"/forgot-password",
 		middleware.RateLimitMiddleware(

@@ -6,6 +6,7 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
 )
 
+// UserResponse secures user API boundaries by excluding sensitive info like passwords.
 type UserResponse struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
@@ -16,6 +17,7 @@ type UserResponse struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+// ToUserResponse converts a database User model into a sanitized UserResponse DTO.
 func ToUserResponse(user *models.User) UserResponse {
 	return UserResponse{
 		ID:        user.ID,

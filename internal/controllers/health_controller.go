@@ -7,6 +7,8 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/utils"
 )
 
+// HealthCheck returns the current health status of the application.
+//
 // @Summary Health Check
 // @Description Check whether the application is running
 // @Tags Health
@@ -15,6 +17,7 @@ import (
 // @Router /health [get]
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
 
+	// Return a success response indicating the backend is running.
 	utils.Success(
 		w,
 		http.StatusOK,

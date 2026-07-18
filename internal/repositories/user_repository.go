@@ -9,12 +9,15 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/utils"
 )
 
+// UserRepository handles the database operations for user profiling and creation.
 type UserRepository struct{}
 
+// NewUserRepository creates a new instance of the UserRepository.
 func NewUserRepository() *UserRepository {
 	return &UserRepository{}
 }
 
+// Create inserts a new user record into the database.
 func (r *UserRepository) Create(user *models.User) error {
 
 	query := `
@@ -23,6 +26,7 @@ func (r *UserRepository) Create(user *models.User) error {
 	RETURNING id, created_at, updated_at;
 	`
 
+	// Insert the user details and check for unique email violations.
 	err := database.DB.QueryRow(
 		context.Background(),
 		query,
@@ -46,6 +50,7 @@ func (r *UserRepository) Create(user *models.User) error {
 	return nil
 }
 
+// GetByID finds a user record by their unique user ID.
 func (r *UserRepository) GetByID(id int) (*models.User, error) {
 
 	user := &models.User{}
@@ -64,6 +69,7 @@ func (r *UserRepository) GetByID(id int) (*models.User, error) {
 	WHERE id = $1;
 	`
 
+	// Query SQL row for user data by ID.
 	err := database.DB.QueryRow(
 		context.Background(),
 		query,

@@ -7,8 +7,10 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/middleware"
 )
 
+// RegisterComplaintRoutes registers endpoints for submitting, reading, editing, and deleting complaints.
 func RegisterComplaintRoutes() {
 
+	// Register endpoint for submitting new complaints or collecting user complaints list.
 	http.Handle(
 		"/complaints",
 		middleware.AuthMiddleware(
@@ -31,6 +33,7 @@ func RegisterComplaintRoutes() {
 		),
 	)
 
+	// Register REST endpoints mapping specific complaint record accesses (retrieve, edit, delete).
 	http.Handle("/complaints/", middleware.AuthMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		switch r.Method {

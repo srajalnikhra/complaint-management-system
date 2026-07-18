@@ -263,9 +263,9 @@ go run main.go
 
 If everything is set up correctly, you'll see a log message saying the server has started.
 
-- API base URL: **http://localhost:8080**
-- Swagger docs: **http://localhost:8080/swagger/index.html**
-- Health check: **http://localhost:8080/health**
+- API base URL: **[http://localhost:8080](http://localhost:8080)**
+- Swagger docs: **[http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)**
+- Health check: **[http://localhost:8080/health](http://localhost:8080/health)**
 
 ---
 
@@ -303,6 +303,42 @@ docker compose up -d
 ```bash
 docker compose down
 ```
+
+---
+
+## 🧪 API Testing
+
+To test all API endpoints using Postman:
+
+### 1. Import the Postman Collection
+
+```text
+postman/Complaint Management System.postman_collection.json
+```
+
+### 2. Import the Environment
+
+```text
+postman/Local Development.postman_environment.json
+```
+
+### 3. Start the application
+
+```bash
+go run main.go
+```
+
+### 4. Base URL
+
+```text
+http://localhost:8080
+```
+
+### 5. Test the APIs
+
+Select the **Local Development** environment in Postman and run the requests
+individually, or use the **Collection Runner** to execute the entire
+collection.
 
 ---
 
