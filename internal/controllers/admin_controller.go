@@ -14,7 +14,10 @@ import (
 
 var adminService = services.NewAdminService()
 
-// GetAllComplaints godoc
+// GetAllComplaints returns a paginated list of all complaints in the system.
+// It supports filtering by search terms or status, and sorting by fields.
+//
+// # GetAllComplaints godoc
 //
 // @Summary Get All Complaints
 // @Description Get all complaints with pagination, filtering and sorting (Admin only)
@@ -34,6 +37,7 @@ var adminService = services.NewAdminService()
 // @Router /admin/complaints [get]
 func GetAllComplaints(w http.ResponseWriter, r *http.Request) {
 
+	// Parse and validate pagination and filtering parameters from the query string.
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 
@@ -55,6 +59,7 @@ func GetAllComplaints(w http.ResponseWriter, r *http.Request) {
 		order = "DESC"
 	}
 
+	// Fetch complaints from the service layer.
 	complaints, err := adminService.GetAllComplaints(page, limit, search, status, sort, order)
 	if err != nil {
 		utils.Error(w, http.StatusInternalServerError, err.Error())
@@ -69,7 +74,10 @@ func GetAllComplaints(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-// UpdateComplaintStatus godoc
+// UpdateComplaintStatus changes the status of a complaint (e.g., pending, resolved).
+// It validates the status value before saving changes to the database.
+//
+// # UpdateComplaintStatus godoc
 //
 // @Summary Update Complaint Status
 // @Description Update complaint status (Admin only)
@@ -88,6 +96,7 @@ func GetAllComplaints(w http.ResponseWriter, r *http.Request) {
 // @Router /admin/complaints/{id}/status [patch]
 func UpdateComplaintStatus(w http.ResponseWriter, r *http.Request) {
 
+	// Extract the complaint ID from the path and convert it to an integer.
 	id, err := strconv.Atoi(strings.TrimSuffix(strings.TrimPrefix(r.URL.Path, "/admin/complaints/"), "/status"))
 	if err != nil {
 		utils.Error(w, http.StatusBadRequest, "Invalid complaint ID")
@@ -96,11 +105,13 @@ func UpdateComplaintStatus(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.UpdateComplaintStatusRequest
 
+	// Decode the request body to get the new status.
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		utils.Error(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
+	// Make sure the status is valid before proceeding.
 	msg := validation.ValidateComplaintStatus(req.Status)
 
 	if msg != "" {
@@ -108,6 +119,7 @@ func UpdateComplaintStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Update the state and send an email notification to the user.
 	if err := adminService.UpdateComplaintStatus(id, req.Status); err != nil {
 
 		if err == utils.ErrComplaintNotFound {
@@ -122,7 +134,9 @@ func UpdateComplaintStatus(w http.ResponseWriter, r *http.Request) {
 	utils.Success(w, http.StatusOK, "Complaint status updated successfully", nil)
 }
 
-// GetAllUsers godoc
+// GetAllUsers returns a list of all registered users in the system.
+//
+// # GetAllUsers godoc
 //
 // @Summary Get All Users
 // @Description Get all users (Admin only)
@@ -136,6 +150,7 @@ func UpdateComplaintStatus(w http.ResponseWriter, r *http.Request) {
 // @Router /admin/users [get]
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
+	// Retrieve all users from the database.
 	users, err := adminService.GetAllUsers()
 	if err != nil {
 		utils.Error(w, http.StatusInternalServerError, err.Error())
@@ -150,7 +165,10 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-// UpdateUserRole godoc
+// UpdateUserRole updates a user's role (e.g., user, admin).
+// It validates the role before saving the update.
+//
+// # UpdateUserRole godoc
 //
 // @Summary Update User Role
 // @Description Update user role (Admin only)
@@ -168,6 +186,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.APIResponse
 // @Router /admin/users/{id}/role [patch]
 func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
+	// Parse the user ID from the URL path.
 	id, err := strconv.Atoi(
 		strings.TrimSuffix(
 			strings.TrimPrefix(r.URL.Path, "/admin/users/"),
@@ -182,16 +201,19 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.UpdateUserRoleRequest
 
+	// Decode the request body to get the new role.
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		utils.Error(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
+	// Validate the requested role.
 	if msg := validation.ValidateUserRole(req.Role); msg != "" {
 		utils.Error(w, http.StatusBadRequest, msg)
 		return
 	}
 
+	// Update the role in the database.
 	if err := adminService.UpdateUserRole(id, req.Role); err != nil {
 		if err == utils.ErrUserNotFound {
 			utils.Error(w, http.StatusNotFound, err.Error())
@@ -210,7 +232,9 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-// UpdateUserStatus godoc
+// UpdateUserStatus enables or disables a user account.
+//
+// # UpdateUserStatus godoc
 //
 // @Summary Update User Status
 // @Description Activate or deactivate a user (Admin only)
@@ -228,6 +252,7 @@ func UpdateUserRole(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.APIResponse
 // @Router /admin/users/{id}/status [patch]
 func UpdateUserStatus(w http.ResponseWriter, r *http.Request) {
+	// Parse the user ID from the URL path.
 	id, err := strconv.Atoi(
 		strings.TrimSuffix(
 			strings.TrimPrefix(r.URL.Path, "/admin/users/"),
@@ -242,11 +267,13 @@ func UpdateUserStatus(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.UpdateUserStatusRequest
 
+	// Decode the request body to get the status boolean.
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		utils.Error(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
+	// Update the active state in the database.
 	if err := adminService.UpdateUserStatus(id, req.IsActive); err != nil {
 		if err == utils.ErrUserNotFound {
 			utils.Error(w, http.StatusNotFound, err.Error())
@@ -265,7 +292,10 @@ func UpdateUserStatus(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-// DeleteUser godoc
+// DeleteUser permanently removes a user from the system.
+// It prevents administrators from deleting their own accounts.
+//
+// # DeleteUser godoc
 //
 // @Summary Delete User
 // @Description Delete a user by ID (Admin only)
@@ -282,12 +312,14 @@ func UpdateUserStatus(w http.ResponseWriter, r *http.Request) {
 // @Router /admin/users/{id} [delete]
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
+	// Parse the user ID from the URL path.
 	id, err := strconv.Atoi(strings.TrimSuffix(strings.TrimPrefix(r.URL.Path, "/admin/users/"), ""))
 	if err != nil {
 		utils.Error(w, http.StatusBadRequest, "Invalid user ID")
 		return
 	}
 
+	// Prevent an admin from deleting themselves.
 	adminID := r.Context().Value("userID").(int)
 
 	if id == adminID {
@@ -299,6 +331,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Delete the user from the database.
 	if err := adminService.DeleteUser(id); err != nil {
 
 		if err == utils.ErrUserNotFound {

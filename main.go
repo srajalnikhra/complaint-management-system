@@ -39,19 +39,27 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/routes"
 )
 
+// main starts the HTTP server, connects to the database, and sets up
+// routes and middleware. It also listens for termination signals to shutdown
+// the server and close database connections cleanly.
 func main() {
 
+	// Load the application configuration settings.
 	config.Initialize()
 
 	appConfig := config.LoadAppConfig()
 	dbConfig := config.LoadDBConfig()
 
+	// Connect to PostgreSQL database and run table migrations.
 	database.Initialize(dbConfig)
 
+	// Register all API routes.
 	routes.RegisterRoutes()
 
+	// Start a background worker to clean up expired rate limit records.
 	go middleware.StartRateLimiterCleanup()
 
+	// Wrap the multiplexer handlers in CORS and logging middleware.
 	handler := middleware.LoggingMiddleware(
 		middleware.CORSMiddleware(
 			http.DefaultServeMux,
@@ -63,6 +71,7 @@ func main() {
 		Handler: handler,
 	}
 
+	// Start the HTTP server in a separate goroutine so it doesn't block the main flow.
 	go func() {
 
 		log.Printf("%s started on port %s", appConfig.Name, appConfig.Port)
@@ -72,6 +81,7 @@ func main() {
 		}
 	}()
 
+	// Listen for system signals to support graceful shutdown.
 	stop := make(chan os.Signal, 1)
 
 	signal.Notify(
@@ -80,10 +90,12 @@ func main() {
 		syscall.SIGTERM,
 	)
 
+	// Wait until we receive a termination signal.
 	<-stop
 
 	log.Println("Shutting down server...")
 
+	// Gracefully shut down the server, allowing active requests to complete within 10 seconds.
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
 		10*time.Second,

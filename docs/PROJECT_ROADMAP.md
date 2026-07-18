@@ -203,10 +203,10 @@ After the backend is complete, document and test everything.
 
 ### Testing
 
-- [ ] Postman Collection
-- [ ] Unit Tests
-- [ ] API Testing
-- [ ] Error Testing
+- [✅] Postman Collection
+- [✅] Unit Tests
+- [✅] API Testing
+- [✅] Error Testing
 
 ---
 
@@ -222,7 +222,7 @@ Deploy the complete backend before starting frontend development.
 
 ### Deployment
 
-- [✅] Dockerfile & Docker Compose (Initialize and implement Docker)
+- [✅] Dockerize the application using Dockerfile and Docker Compose
 - [ ] Deploy PostgreSQL Database
 - [ ] Deploy Go Backend
 - [ ] Configure Environment Variables

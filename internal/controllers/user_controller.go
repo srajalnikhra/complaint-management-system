@@ -11,17 +11,22 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/validation"
 )
 
+// UserController handles user registration and profile HTTP endpoints.
 type UserController struct {
 	service *services.UserService
 }
 
+// NewUserController creates a new instance of the UserController.
 func NewUserController() *UserController {
 	return &UserController{
 		service: services.NewUserService(),
 	}
 }
 
-// Register godoc
+// Register creates a new user account with default role of 'User'.
+// It handles input validation and ensures that the email is not already registered.
+//
+// # Register godoc
 //
 // @Summary Register a new user
 // @Description Create a new user account
@@ -38,11 +43,13 @@ func (c *UserController) Register(w http.ResponseWriter, r *http.Request) {
 
 	var req dto.RegisterUserRequest
 
+	// Decode the request body to get the registration details.
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		utils.Error(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
 
+	// Validate input parameters.
 	msg := validation.ValidateRegister(
 		req.Name,
 		req.Email,
@@ -61,6 +68,7 @@ func (c *UserController) Register(w http.ResponseWriter, r *http.Request) {
 		Role:     models.RoleUser,
 	}
 
+	// Create the user in the database.
 	if err := c.service.CreateUser(&user); err != nil {
 
 		if err == utils.ErrUserAlreadyExists {

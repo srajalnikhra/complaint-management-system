@@ -1,0 +1,625 @@
+{
+  "info": {
+    "_postman_id": "941cd1fb-0b74-4b29-88a7-143e2d840e08",
+    "name": "Complaint Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44022468",
+    "_collection_link": "https://go.postman.co/collection/44022468-941cd1fb-0b74-4b29-88a7-143e2d840e08?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {\r",
+                  "    const response = pm.response.json();\r",
+                  "\r",
+                  "    if (response.data && response.data.id) {\r",
+                  "        pm.environment.set(\"user_id\", response.data.id);\r",
+                  "    }\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Srajal6\",\r\n    \"email\": \"srajal6@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "register"
+              ]
+            },
+            "description": "## Purpose\n\nCreates a new user account.\n\n## Method & endpoint\n\n`POST {{base_url}}/register`\n\n## Required headers\n\n`Content-Type: application/json`\n\n## Request body\n\n- `name` (string): User's name\n    \n- `email` (string): User's email address\n    \n- `password` (string): User's password\n    \n\n### Example body\n\n``` json\n{\n  \"name\": \"Srajal5\",\n  \"email\": \"srajal5@gmail.com\",\n  \"password\": \"123456\"\n}\n\n ```\n\n## Expected success response\n\n- `201 Created`\n    \n- Returns the created user details. If `response.data.id` is present, the existing test script stores it in the `user_id` environment variable.\n    \n\n## Environment variables used\n\n- `base_url`: Base API URL used in the request URL\n    \n- `user_id`: Set from a successful response by the existing test script"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    const response = pm.response.json();\r",
+                  "\r",
+                  "    if (response.data && response.data.token) {\r",
+                  "        pm.environment.set(\"token\", response.data.token);\r",
+                  "    }\r",
+                  "\r",
+                  "    if (response.data && response.data.user) {\r",
+                  "        pm.environment.set(\"user_id\", response.data.user.id);\r",
+                  "    }\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"srajal6@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "## Purpose\n\nAuthenticate a user with email and password and obtain the user session token.\n\n## Method and Endpoint\n\n`POST {{base_url}}/login`\n\n## Required Headers\n\n- `Content-Type: application/json`\n    \n\n## Request Body Fields\n\n- `email` _(string, required)_: The user's email address.\n    \n- `password` _(string, required)_: The user's password.\n    \n\nExample body:\n\n``` json\n{\n  \"email\": \"srajal4@gmail.com\",\n  \"password\": \"12345\"\n}\n\n ```\n\n## Expected Success Behavior\n\nOn success, the request returns an HTTP `200` response with authentication data for the user, including a token and user details.\n\n## Test Script Note\n\nWhen the response is successful, the test script stores:\n\n- `token` from `response.data.token`\n    \n- `user_id` from `response.data.user.id`  \n    into the active environment."
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"srajalnikhra@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/forgot-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "forgot-password"
+              ]
+            },
+            "description": "Sends a password reset OTP to the provided email address.\n\n**Method & path**  \n`POST /forgot-password`\n\n**Required body field**  \nSend a JSON body with:\n\n- `email` (string): Email address to receive the OTP.\n    \n\n**Expected success response**  \n`200 OK`\n\n``` json\n{\n  \"success\": true,\n  \"message\": \"OTP sent successfully\"\n}\n\n ```"
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"srajalnikhra@gmail.com\",\r\n  \"otp\": \"470029\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/verify-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "verify-otp"
+              ]
+            },
+            "description": "Verifies the one-time password sent to a user's email during the password reset flow.\n\nEndpoint summary\n- Method: POST\n- URL: {{base_url}}/verify-otp\n\nRequired body fields\n- email: The email address associated with the OTP.\n- otp: The one-time password to validate.\n\nExpected responses\n- Success: Returns a confirmation that the OTP is valid and the user may continue the reset process.\n- Error: Returns an error when the email or OTP is missing, the OTP is invalid or expired, or the request cannot be processed."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"srajalnikhra@gmail.com\",\r\n  \"new_password\": \"123456\",\r\n  \"otp\": \"470029\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/reset-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reset-password"
+              ]
+            },
+            "description": "Resets a user's password after OTP verification.\n\n**Method & path**\n`POST /reset-password`\n\nUse this request to set a new password for the account associated with the provided email address.\n\n**Required body fields**\n- `email` (string): Email address of the user resetting the password.\n- `new_password` (string): The new password to set for the account.\n- `otp` (string): One-time password previously issued for password reset verification.\n\n**Prerequisites**\nProvide a valid OTP generated through the forgot-password flow, and ensure `{{base_url}}` points to the target API environment.\n\n**Example success response**\nStatus: `200 OK`\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Password reset successfully\"\n}\n```"
+          },
+          "response": []
+        }
+      ],
+      "description": "## Authentication endpoints for user registration, login, password reset and OTP verification."
+    },
+    {
+      "name": "Complaints",
+      "item": [
+        {
+          "name": "Create Complaint",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {\r",
+                  "    const response = pm.response.json();\r",
+                  "\r",
+                  "    if (response.data && response.data.ID) {\r",
+                  "        pm.environment.set(\"complaint_id\", response.data.ID);\r",
+                  "    }\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Internet\",\r\n  \"description\": \"Mobile internet not working smooth\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/complaints",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "complaints"
+              ]
+            },
+            "description": "Creates a new complaint for the authenticated user.\n\n**Endpoint**\n`POST {{base_url}}/complaints`\n\n**Authorization**\nRequires authentication using the `token` variable.\n\n**Request body**\nSend a JSON body with:\n- `title` — complaint title.\n- `description` — details describing the issue.\n\nExample:\n```json\n{\n  \"title\": \"Internet\",\n  \"description\": \"Mobile internet not working smooth\"\n}\n```\n\n**Success behavior**\nOn success, the request returns HTTP `201 Created` with the created complaint in the response body.\n\n**Test behavior**\nThe test script checks for HTTP `201` and, when `response.data.ID` is present, stores that value in the environment variable `complaint_id` for later requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Complaints",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/complaints",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "complaints"
+              ]
+            },
+            "description": "Retrieves the complaints created by the currently authenticated user.\n\n**Authentication**: Requires a Bearer token. Set `{{token}}` in the active environment and send it as the authorization token.\n\n**Path**: `GET {{base_url}}/complaints`\n\n**Successful response**: Returns a success response containing a list of complaint records for the authenticated user. At a high level, each item typically represents a complaint and may include identifiers, user-related details, status, category, message or description, and timestamps.\n\n**Notable behavior**: This endpoint is scoped to the authenticated user and returns only that user's complaints, rather than all complaints in the system."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Complaint By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/complaints/{{complaint_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "complaints",
+                "{{complaint_id}}"
+              ]
+            },
+            "description": "Retrieves a single complaint by its ID.\n\nUse the `complaint_id` path variable to specify which complaint to fetch in `GET {{base_url}}/complaints/{{complaint_id}}`.\n\nAuthorization is required using a Bearer token (`{{token}}`).\n\nTypical responses include `200 OK` when the complaint is found, authentication/authorization errors such as `401 Unauthorized` or `403 Forbidden` when access is invalid, `404 Not Found` when no complaint exists for the provided ID, and possible server-side errors such as `500 Internal Server Error`."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Complaint",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Updated Complaint\",\r\n    \"description\": \"Updated description.\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/complaints/{{complaint_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "complaints",
+                "{{complaint_id}}"
+              ]
+            },
+            "description": "Updates an existing complaint by ID.\n\n**Endpoint**: `PUT {{base_url}}/complaints/{{complaint_id}}`\n\nUses the `base_url` variable for the API host and `complaint_id` for the complaint to update. This request likely expects an authentication token, since `token` is used in scope and the last response returned `401 Unauthorized` with the message `Your account has been deactivated`.\n\nThe raw JSON body currently includes these fields:\n- `title`: updated complaint title\n- `description`: updated complaint description\n\nA successful response would typically indicate that the complaint was updated. Error responses may occur if authentication is missing or invalid, the account is deactivated, the complaint ID is invalid, or the request body fails validation."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Complaint",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/complaints/{{complaint_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "complaints",
+                "{{complaint_id}}"
+              ]
+            },
+            "description": "Deletes a complaint identified by the `{{complaint_id}}` Postman variable.\n\n**Endpoint**: `DELETE {{base_url}}/complaints/{{complaint_id}}`\n\n**Authorization**: Uses Bearer token authentication with `{{token}}`.\n\n**Variables used**:\n- `{{base_url}}`: Base URL of the Complaint Portal API.\n- `{{complaint_id}}`: ID of the complaint to delete.\n- `{{token}}`: Bearer token for an authenticated user authorized to perform this action.\n\n**Expected outcomes**: On success, the API deletes the specified complaint and returns a success response. Common error outcomes include unauthorized access when the token is missing or invalid, forbidden access when the user lacks permission, not found when the complaint ID does not exist, and validation or server errors if the request cannot be processed."
+          },
+          "response": []
+        }
+      ],
+      "description": "## User-only endpoints for creating, viewing, updating and deleting complaints."
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get All Complaints",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/complaints",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "complaints"
+              ]
+            },
+            "description": "## Purpose\nRetrieve the full list of complaints for administrative review and management.\n\n## Authorization\nRequires Bearer token authentication using `{{admin_token}}`.\n\n## Endpoint\n`GET {{base_url}}/admin/complaints`\n\n## Success Response\nReturns `200 OK` with a list of complaints in the response body.\n\n## Notes\nIntended for admin access. Uses the `{{base_url}}` collection/environment variable and does not require a request body or query parameters."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Complaint Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"RESOLVED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/complaints/{{complaint_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "complaints",
+                "{{complaint_id}}",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"role\": \"admin\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users/{{user_id}}/role",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{user_id}}",
+                "role"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"is_active\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users/{{user_id}}/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{user_id}}",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": []
+          },
+          "response": []
+        }
+      ],
+      "description": "## Admin-only endpoints for managing users and complaints."
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Checks whether the service is reachable and responding.\n\nMethod: POST  \nEndpoint: `{{base_url}}/health`\n\nUse this request to verify that the API is up before testing other endpoints. A successful response should indicate that the service is healthy and able to accept requests.\n\n`base_url` is read from the active environment, so make sure the correct environment is selected before sending the request."
+          },
+          "response": []
+        }
+      ],
+      "description": "## Health check endpoint for verifying server availability."
+    }
+  ]
+}

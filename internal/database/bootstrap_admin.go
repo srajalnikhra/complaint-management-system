@@ -8,9 +8,11 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/utils"
 )
 
+// BootstrapAdmin creates a default admin account on startup if no admin users exist yet.
 func BootstrapAdmin() {
 	var count int
 
+	// Check if there are any existing admin users in the database.
 	err := DB.QueryRow(
 		context.Background(),
 		`SELECT COUNT(*) FROM users WHERE role = $1`,
@@ -26,11 +28,13 @@ func BootstrapAdmin() {
 		return
 	}
 
+	// Hash the default password before saving it.
 	hashedPassword, err := utils.HashPassword("123456")
 	if err != nil {
 		log.Fatal("Failed to hash admin password:", err)
 	}
 
+	// Insert the default admin record.
 	_, err = DB.Exec(
 		context.Background(),
 		`

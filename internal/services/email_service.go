@@ -8,10 +8,12 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/config"
 )
 
+// SendComplaintStatusEmail sends an email notification about a complaint status change.
 func SendComplaintStatusEmail(toEmail, userName, complaintTitle, status string) error {
 
 	appConfig := config.LoadAppConfig()
 
+	// Connect SMTP server configurations and authenticate.
 	auth := smtp.PlainAuth(
 		"",
 		appConfig.SMTPEmail,
@@ -21,15 +23,16 @@ func SendComplaintStatusEmail(toEmail, userName, complaintTitle, status string) 
 
 	subject := "Complaint Status Updated"
 
+	// Build the email body message.
 	body := fmt.Sprintf(
 		`Hi %s,
-
+ 
 Your complaint has been updated.
-
+ 
 Complaint: %s
-
+ 
 New Status: %s
-
+ 
 Thank you,
 CMS Backend Team`,
 		userName,
@@ -46,6 +49,7 @@ CMS Backend Team`,
 
 	address := appConfig.SMTPHost + ":" + appConfig.SMTPPort
 
+	// Connect to the email server and send the mail.
 	err := smtp.SendMail(
 		address,
 		auth,
@@ -64,10 +68,12 @@ CMS Backend Team`,
 	return nil
 }
 
+// SendOTPEmail sends a password reset OTP code to a user's registered email.
 func SendOTPEmail(toEmail, userName, otp string) error {
 
 	appConfig := config.LoadAppConfig()
 
+	// Load app config profiles for SMTP connection and authentication.
 	auth := smtp.PlainAuth(
 		"",
 		appConfig.SMTPEmail,
@@ -77,19 +83,20 @@ func SendOTPEmail(toEmail, userName, otp string) error {
 
 	subject := "Complaint Management System | Password Reset OTP"
 
+	// Build the message details with OTP.
 	body := fmt.Sprintf(
 		`Hi %s,
-
+ 
 We received a request to reset your password.
-
+ 
 Your OTP is:
-
+ 
 %s
-
+ 
 This OTP is valid for 10 minutes.
-
+ 
 If you didn't request this request, please ignore this email.
-
+ 
 Regards,
 CMS Backend Team`,
 		userName,
@@ -105,6 +112,7 @@ CMS Backend Team`,
 
 	address := appConfig.SMTPHost + ":" + appConfig.SMTPPort
 
+	// Connect to the SMTP server and send the mail.
 	err := smtp.SendMail(
 		address,
 		auth,

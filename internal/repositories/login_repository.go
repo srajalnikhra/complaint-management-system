@@ -8,12 +8,15 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/models"
 )
 
+// LoginRepository performs direct database access for login checking and token issuance.
 type LoginRepository struct{}
 
+// NewLoginRepository creates a new instance of the LoginRepository.
 func NewLoginRepository() *LoginRepository {
 	return &LoginRepository{}
 }
 
+// GetByEmail finds a user record matching a specific email address.
 func (r *LoginRepository) GetByEmail(email string) (*models.User, error) {
 	user := &models.User{}
 
@@ -23,6 +26,7 @@ func (r *LoginRepository) GetByEmail(email string) (*models.User, error) {
 	WHERE email = $1;
 	`
 
+	// Query database for a user matching the provided email.
 	err := database.DB.QueryRow(
 		context.Background(),
 		query,
@@ -45,6 +49,7 @@ func (r *LoginRepository) GetByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
+// GetOTPData gets the verification OTP hash and expiration time for a user.
 func (r *LoginRepository) GetOTPData(email string) (*models.User, error) {
 
 	user := &models.User{}
@@ -59,6 +64,7 @@ func (r *LoginRepository) GetOTPData(email string) (*models.User, error) {
 	WHERE email = $1;
 	`
 
+	// Query database for the OTP hash and its expiry timestamp.
 	err := database.DB.QueryRow(
 		context.Background(),
 		query,
@@ -77,6 +83,7 @@ func (r *LoginRepository) GetOTPData(email string) (*models.User, error) {
 	return user, nil
 }
 
+// SaveOTP stores the generated OTP details for a user.
 func (r *LoginRepository) SaveOTP(email, otpHash string, expiresAt time.Time) error {
 
 	query := `
@@ -87,6 +94,7 @@ func (r *LoginRepository) SaveOTP(email, otpHash string, expiresAt time.Time) er
 	WHERE email = $3;
 	`
 
+	// Update sql record sets OTP hash and expires_at fields.
 	_, err := database.DB.Exec(
 		context.Background(),
 		query,
@@ -98,6 +106,7 @@ func (r *LoginRepository) SaveOTP(email, otpHash string, expiresAt time.Time) er
 	return err
 }
 
+// ClearOTP clears the OTP details from the user record.
 func (r *LoginRepository) ClearOTP(email string) error {
 
 	query := `
@@ -108,6 +117,7 @@ func (r *LoginRepository) ClearOTP(email string) error {
 	WHERE email = $1;
 	`
 
+	// Update sql record sets OTP fields to null.
 	_, err := database.DB.Exec(
 		context.Background(),
 		query,
@@ -117,6 +127,7 @@ func (r *LoginRepository) ClearOTP(email string) error {
 	return err
 }
 
+// UpdatePassword updates a user's password with a new hash.
 func (r *LoginRepository) UpdatePassword(email, hashedPassword string) error {
 
 	query := `
@@ -126,6 +137,7 @@ func (r *LoginRepository) UpdatePassword(email, hashedPassword string) error {
 	WHERE email = $2;
 	`
 
+	// Save the newly hashed password in the user's database row.
 	_, err := database.DB.Exec(
 		context.Background(),
 		query,

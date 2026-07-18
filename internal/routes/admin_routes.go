@@ -8,8 +8,10 @@ import (
 	"github.com/srajalnikhra/complaint-management-system/internal/middleware"
 )
 
+// RegisterAdminRoutes binds HTTP endpoints prefix "/admin" containing administrative options and operations.
 func RegisterAdminRoutes() {
 
+	// Register complaints endpoint under admin credentials control.
 	http.Handle(
 		"/admin/complaints",
 		middleware.AuthMiddleware(
@@ -38,6 +40,7 @@ func RegisterAdminRoutes() {
 		),
 	)
 
+	// Register user list retrieval endpoint.
 	http.Handle(
 		"/admin/users",
 		middleware.AuthMiddleware(
@@ -57,6 +60,7 @@ func RegisterAdminRoutes() {
 		),
 	)
 
+	// Register user update and deletion endpoint routing.
 	http.Handle(
 		"/admin/users/",
 		middleware.AuthMiddleware(

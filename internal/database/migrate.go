@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// RunMigrations sets up the database schema by creating the necessary tables and columns if they do not exist.
 func RunMigrations() {
 	query := `
 	CREATE TABLE IF NOT EXISTS users (
@@ -19,6 +20,7 @@ func RunMigrations() {
 	);
 	`
 
+	// Create the users table.
 	_, err := DB.Exec(context.Background(), query)
 	if err != nil {
 		log.Fatal("Failed to run migrations:", err)
@@ -30,6 +32,7 @@ ADD COLUMN IF NOT EXISTS otp_hash TEXT,
 ADD COLUMN IF NOT EXISTS otp_expires_at TIMESTAMPTZ;
 `
 
+	// Add OTP fields to the users table for the password reset flow.
 	_, err = DB.Exec(context.Background(), alterUsers)
 	if err != nil {
 		log.Fatal(err)
@@ -48,6 +51,7 @@ CREATE TABLE IF NOT EXISTS complaints(
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`
 
+	// Create the complaints table.
 	_, err = DB.Exec(context.Background(), complaintsTable)
 	if err != nil {
 		log.Fatal(err)

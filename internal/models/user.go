@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// User maps to the users database record, representing customers or administrator accounts.
 type User struct {
 	ID       int
 	Name     string
