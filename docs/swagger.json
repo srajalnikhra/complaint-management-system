@@ -1,4 +1,7 @@
 {
+    "schemes": [
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
         "description": "Complaint Management System Backend API",
@@ -6,7 +9,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "complaint-management-system-lciv.onrender.com",
     "basePath": "/",
     "paths": {
         "/admin/complaints": {
@@ -426,41 +429,6 @@
             }
         },
         "/complaints": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Get all complaints created by the logged-in user",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Complaints"
-                ],
-                "summary": "Get My Complaints",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.APIResponse"
-                        }
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {

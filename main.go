@@ -1,7 +1,8 @@
 // @title Complaint Management System API
 // @version 1.0
 // @description Complaint Management System Backend API
-// @host localhost:8080
+// @host complaint-management-system-lciv.onrender.com
+// @schemes https
 // @BasePath /
 //
 // @tag.name Health
