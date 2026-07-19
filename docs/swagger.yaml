@@ -74,7 +74,7 @@ definitions:
       success:
         type: boolean
     type: object
-host: complaint-management-system-lciv.onrender.com
+host: localhost:8080
 info:
   contact: {}
   description: Complaint Management System Backend API
@@ -665,8 +665,6 @@ paths:
       summary: Verify OTP
       tags:
       - Authentication
-schemes:
-- https
 securityDefinitions:
   BearerAuth:
     in: header

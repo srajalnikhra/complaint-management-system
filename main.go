@@ -1,8 +1,7 @@
 // @title Complaint Management System API
 // @version 1.0
 // @description Complaint Management System Backend API
-// @host complaint-management-system-lciv.onrender.com
-// @schemes https
+// @host localhost:8080
 // @BasePath /
 //
 // @tag.name Health
@@ -33,6 +32,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/srajalnikhra/complaint-management-system/docs"
 	_ "github.com/srajalnikhra/complaint-management-system/docs"
 	"github.com/srajalnikhra/complaint-management-system/internal/config"
 	"github.com/srajalnikhra/complaint-management-system/internal/database"
@@ -50,6 +50,15 @@ func main() {
 
 	appConfig := config.LoadAppConfig()
 	dbConfig := config.LoadDBConfig()
+	
+	// Application changes the Swagger host at runtime.
+	if os.Getenv("APP_ENV") == "production" {
+		docs.SwaggerInfo.Host = "complaint-management-system-lciv.onrender.com"
+		docs.SwaggerInfo.Schemes = []string{"https"}
+	} else {
+		docs.SwaggerInfo.Host = "localhost:8080"
+		docs.SwaggerInfo.Schemes = []string{"http"}
+	}
 
 	// Connect to PostgreSQL database and run table migrations.
 	database.Initialize(dbConfig)

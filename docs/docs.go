@@ -1069,9 +1069,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "complaint-management-system-lciv.onrender.com",
+	Host:             "localhost:8080",
 	BasePath:         "/",
-	Schemes:          []string{"https"},
+	Schemes:          []string{},
 	Title:            "Complaint Management System API",
 	Description:      "Complaint Management System Backend API",
 	InfoInstanceName: "swagger",
