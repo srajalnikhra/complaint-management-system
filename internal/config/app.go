@@ -6,8 +6,8 @@ type AppConfig struct {
 	Env  string
 	Port string
 
-	SMTPHost     string
-	SMTPPort     string
-	SMTPEmail    string
-	SMTPPassword string
+	// MailerSend API Configuration
+	MailerSendAPIKey string
+	SenderName       string
+	SenderEmail      string
 }

@@ -16,18 +16,17 @@ func LoadEnv() {
 	}
 }
 
-// LoadAppConfig reads application and email configurations from the environment.
+// LoadAppConfig reads application and Brevo configurations from the environment.
 func LoadAppConfig() AppConfig {
-	// Load general settings and mail server credentials.
 	return AppConfig{
 		Name: os.Getenv("APP_NAME"),
 		Env:  os.Getenv("APP_ENV"),
 		Port: os.Getenv("APP_PORT"),
 
-		SMTPHost:     os.Getenv("SMTP_HOST"),
-		SMTPPort:     os.Getenv("SMTP_PORT"),
-		SMTPEmail:    os.Getenv("SMTP_EMAIL"),
-		SMTPPassword: os.Getenv("SMTP_PASSWORD"),
+		// MailerSend Configuration
+		MailerSendAPIKey: os.Getenv("MAILERSEND_API_KEY"),
+		SenderName:  os.Getenv("SENDER_NAME"),
+		SenderEmail: os.Getenv("SENDER_EMAIL"),
 	}
 }
 
