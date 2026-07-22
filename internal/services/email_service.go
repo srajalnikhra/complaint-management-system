@@ -12,14 +12,17 @@ import (
 
 // sendEmail sends an email using the MailerSend API.
 func sendEmail(toEmail, subject, body string) error {
+
+	// Load application configuration.
 	appConfig := config.LoadAppConfig()
 
+	// Create the MailerSend client and email message.
 	ms := mailersend.NewMailersend(appConfig.MailerSendAPIKey)
-
 	message := ms.Email.NewMessage()
 
+	// Configure sender, recipient, and reply-to details.
 	message.SetFrom(mailersend.From{
-		Name: appConfig.SenderName,
+		Name:  appConfig.SenderName,
 		Email: appConfig.SenderEmail,
 	})
 
@@ -30,14 +33,16 @@ func sendEmail(toEmail, subject, body string) error {
 	})
 
 	message.SetReplyTo(mailersend.Recipient{
-		Name: appConfig.SenderName,
+		Name:  appConfig.SenderName,
 		Email: appConfig.SenderEmail,
 	})
 
+	// Set the email content.
 	message.SetSubject(subject)
 	message.SetText(body)
 	message.SetHTML(fmt.Sprintf("<pre style=\"font-family:Arial,sans-serif\">%s</pre>", body))
 
+	// Send the email.
 	response, err := ms.Email.Send(context.Background(), message)
 	if err != nil {
 		log.Println("Failed to send email:", err)
@@ -48,10 +53,13 @@ func sendEmail(toEmail, subject, body string) error {
 	return nil
 }
 
+// SendComplaintStatusEmail sends an email notification about a complaint status change.
 func SendComplaintStatusEmail(toEmail, userName, complaintTitle, status string) error {
+
 	subject := "Complaint Status Updated"
 
-	body := fmt.Sprintf(`Hi %s,
+	body := fmt.Sprintf(
+		`Hi %s,
 
 Your complaint has been updated.
 
@@ -66,13 +74,20 @@ CMS Backend Team`,
 		status,
 	)
 
-	return sendEmail(toEmail, subject, body)
+	return sendEmail(
+		toEmail,
+		subject,
+		body,
+	)
 }
 
+// SendOTPEmail sends a password reset OTP code to a user's registered email.
 func SendOTPEmail(toEmail, userName, otp string) error {
+
 	subject := "Complaint Management System | Password Reset OTP"
 
-	body := fmt.Sprintf(`Hi %s,
+	body := fmt.Sprintf(
+		`Hi %s,
 
 We received a request to reset your password.
 
@@ -90,5 +105,9 @@ CMS Backend Team`,
 		otp,
 	)
 
-	return sendEmail(toEmail, subject,body)
+	return sendEmail(
+		toEmail,
+		subject,
+		body,
+	)
 }
