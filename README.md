@@ -7,7 +7,8 @@
 [![Go Version](https://img.shields.io/badge/Go-1.25-00ADD8?logo=go&logoColor=white)](https://go.dev)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![Swagger](https://img.shields.io/badge/API%20Docs-Swagger-85EA2D?logo=swagger&logoColor=black)](http://localhost:8080/swagger/index.html)
+[![Swagger](https://img.shields.io/badge/API%20Docs-Swagger-85EA2D?logo=swagger&logoColor=black)](https://complaint-management-system-lciv.onrender.com/swagger/index.html)
+[![Go CI](https://github.com/srajalnikhra/complaint-management-system/actions/workflows/go.yml/badge.svg)](https://github.com/srajalnikhra/complaint-management-system/actions/workflows/go.yml)
 
 [Overview](#-overview) • [Features](#-features) • [API Reference](#-api-reference) • [Getting Started](#-getting-started) • [Docker](#-run-with-docker) • [Security](#-security)
 
@@ -22,6 +23,16 @@
 It's built in plain Go using the standard `net/http` package (no framework like Gin or Echo). Data is stored in PostgreSQL, login works through JWT tokens, and the whole project can run either directly with `go run` or inside Docker.
 
 The API is documented with Swagger, generated straight from the code, so the docs always match what's actually running.
+
+---
+
+## 🌐 Live Demo
+
+- Backend API:
+[https://complaint-management-system-lciv.onrender.com](https://complaint-management-system-lciv.onrender.com)
+
+- Swagger UI:
+[https://complaint-management-system-lciv.onrender.com/swagger/index.html](https://complaint-management-system-lciv.onrender.com/swagger/index.html)
 
 ---
 
@@ -72,7 +83,7 @@ The API is documented with Swagger, generated straight from the code, so the doc
 - Rate limiting on sensitive routes
 - Graceful shutdown
 - Creates a default admin account automatically
-- Email notifications (SMTP)
+- Email notifications (MailerSend API)
 - Swagger API documentation
 
 ---
@@ -86,8 +97,11 @@ The API is documented with Swagger, generated straight from the code, so the doc
 | Authentication    | JWT                     |
 | Password Security | bcrypt                  |
 | API Documentation | Swagger (OpenAPI)       |
-| Email Service     | SMTP                    |
+| Email Service     | MailerSend API          |
 | Containerization  | Docker & Docker Compose |
+| Deployment        | Render                  |
+| Cloud Database    | Neon PostgreSQL         |
+| CI                | GitHub Actions          |
 
 ---
 
@@ -95,6 +109,8 @@ The API is documented with Swagger, generated straight from the code, so the doc
 
 ```text
 complaint-management-system/
+├── .github/
+│   └── workflows/
 ├── docs/
 ├── internal/
 │   ├── config/
@@ -109,6 +125,8 @@ complaint-management-system/
 │   ├── services/
 │   ├── utils/
 │   └── validation/
+├── postman/
+├── screenshots/
 ├── scripts/
 ├── .env.example
 ├── Dockerfile
@@ -123,10 +141,17 @@ complaint-management-system/
 
 ## 📡 API Reference
 
-**Base URL:** `http://localhost:8080`
-**Interactive docs:** `http://localhost:8080/swagger/index.html`
+### Local
 
-Routes marked 🔒 need a header: `Authorization: Bearer <your-token>`
+- **API:** `http://localhost:8080`
+- **Swagger UI:** `http://localhost:8080/swagger/index.html`
+
+### Production
+
+- **API:** `https://complaint-management-system-lciv.onrender.com`
+- **Swagger UI:** `https://complaint-management-system-lciv.onrender.com/swagger/index.html`
+
+🔒 **Protected routes require the `Authorization` header with a valid JWT token.**
 
 ### Authentication
 
@@ -225,23 +250,22 @@ cp .env.example .env
 
 Then open `.env` and fill in your own values:
 
-| Variable        | What it's for                               |
-| --------------- | ------------------------------------------- |
-| `APP_NAME`      | Name shown in logs / health check           |
-| `APP_ENV`       | `development`, `production`, etc.           |
-| `APP_PORT`      | Port the server runs on (default `8080`)    |
-| `DB_HOST`       | Database host (`localhost` for local setup) |
-| `DB_PORT`       | Database port (default `5432`)              |
-| `DB_USER`       | Your PostgreSQL username                    |
-| `DB_PASSWORD`   | Your PostgreSQL password                    |
-| `DB_NAME`       | Database name to use                        |
-| `DB_SSLMODE`    | SSL mode (`disable` for local dev)          |
-| `JWT_SECRET`    | A secret key used to sign login tokens      |
-| `JWT_EXPIRY`    | How long a token stays valid (e.g. `24h`)   |
-| `SMTP_HOST`     | Your email provider's SMTP host             |
-| `SMTP_PORT`     | SMTP port (usually `587`)                   |
-| `SMTP_EMAIL`    | The email address used to send OTPs         |
-| `SMTP_PASSWORD` | App password for that email account         |
+| Variable              | What it's for                             |
+|-----------------------|-------------------------------------------|
+| `APP_NAME`            | Name shown in logs / health check         |
+| `APP_ENV`             | `development`, `production`, etc.         |
+| `APP_PORT`            | Port the server runs on (default `8080`)  |
+| `DB_HOST`             | Database host (`localhost` for local)     |
+| `DB_PORT`             | Database port (default `5432`)            |
+| `DB_USER`             | Your PostgreSQL username                  |
+| `DB_PASSWORD`         | Your PostgreSQL password                  |
+| `DB_NAME`             | Database name to use                      |
+| `DB_SSLMODE`          | SSL mode (`disable` for local dev)        |
+| `JWT_SECRET`          | A secret key used to sign login tokens    |
+| `JWT_EXPIRY`          | How long a token stays valid (e.g. `24h`) |
+| `MAILERSEND_API_KEY`  | MailerSend API key                        |
+| `SENDER_NAME`         | Sender name displayed in emails           |
+| `SENDER_EMAIL`        | Sender email address                      |
 
 ### 4. Create the database
 
@@ -266,6 +290,8 @@ If everything is set up correctly, you'll see a log message saying the server ha
 - API base URL: **[http://localhost:8080](http://localhost:8080)**
 - Swagger docs: **[http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)**
 - Health check: **[http://localhost:8080/health](http://localhost:8080/health)**
+- Production: **[https://complaint-management-system-lciv.onrender.com](https://complaint-management-system-lciv.onrender.com)**
+- Production Swagger docs: **[https://complaint-management-system-lciv.onrender.com/swagger/index.html](https://complaint-management-system-lciv.onrender.com/swagger/index.html)**
 
 ---
 
@@ -306,6 +332,16 @@ docker compose down
 
 ---
 
+## 🚀 Deployment
+
+- **Backend:** Render
+- **Database:** Neon PostgreSQL
+- **Email Service:** MailerSend
+- **CI/CD:** GitHub Actions
+- **API Documentation:** Swagger (OpenAPI)
+
+---
+
 ## 🧪 API Testing
 
 To test all API endpoints using Postman:
@@ -342,6 +378,98 @@ collection.
 
 ---
 
+## 📸 Screenshots
+
+### Swagger UI
+
+Interactive API documentation generated using Swagger/OpenAPI.
+
+<p align="center">
+  <img src="screenshots/swagger-ui.png" width="800" alt="Swagger UI">
+</p>
+
+---
+
+### Swagger Endpoints
+
+All authentication, complaint, and admin endpoints documented and testable.
+
+<p align="center">
+  <img src="screenshots/swagger-ui2.png" width="800" alt="Swagger Endpoints">
+</p>
+
+---
+
+### Postman Collection
+
+Complete Postman collection for testing every API endpoint.
+
+<p align="center">
+  <img src="screenshots/postman-collection.png" width="800" alt="Postman Collection">
+</p>
+
+---
+
+### GitHub Actions (CI)
+
+Every push automatically builds the project and runs all Go tests.
+
+<p align="center">
+  <img src="screenshots/github-actions.png" width="700" alt="GitHub Actions">
+</p>
+
+---
+
+### OTP Email
+
+Password reset OTP sent using MailerSend.
+
+<p align="center">
+  <img src="screenshots/otp-email.png" width="700" alt="OTP Email">
+</p>
+
+---
+
+### Complaint Status Email
+
+Automatic email notification when an admin updates a complaint's status.
+
+<p align="center">
+  <img src="screenshots/complaint-status-email.png" width="700" alt="Complaint Status Email">
+</p>
+
+---
+
+### Docker
+
+Application running inside Docker containers.
+
+<p align="center">
+  <img src="screenshots/docker-terminal.png" alt="Docker terminal screenshot" width="800">
+</p>
+
+---
+
+### Architecture Diagram
+
+High-level overview of the application's layered architecture.
+
+<p align="center">
+  <img src="screenshots/architecture-diagram.png" alt="Architecture diagram" width="650">
+</p>
+
+---
+
+### Development Environment
+
+Project structure and development environment in Visual Studio Code.
+
+<p align="center">
+  <img src="screenshots/vs-code.png" alt="VS Code screenshot" width="800">
+</p>
+
+---
+
 ## 🔒 Security
 
 - Passwords are hashed with bcrypt — never stored as plain text
@@ -353,7 +481,7 @@ collection.
 - CORS is configured so only allowed origins can call the API from a browser
 - Users can only view, edit, or delete their own complaints
 - An admin can't accidentally delete their own account
-- All secrets (DB password, JWT key, SMTP credentials) come from environment variables, never hardcoded
+- All secrets (DB password, JWT key, MailerSend API credentials) come from environment variables, never hardcoded
 
 ---
 
@@ -368,22 +496,10 @@ More detail is available in the [`docs/`](./docs) folder:
 
 ---
 
-## 🚧 Roadmap
-
-- [ ] Deploy to production
-- [ ] Add unit tests
-- [ ] Postman collection
-- [ ] React frontend
-- [ ] CI/CD pipeline
-- [ ] Redis caching
-- [ ] Monitoring & metrics
-
----
-
 ## 👨‍💻 Author
 
-**Srajal Nikhra**
-Backend Developer
+**Srajal Nikhra** -
+Backend Developer | Golang Developer
 
 GitHub: [github.com/srajalnikhra](https://github.com/srajalnikhra)
 

@@ -19,4 +19,7 @@ func RegisterRoutes() {
 
 	// Bind API documentation endpoints.
 	RegisterSwaggerRoutes()
+
+	// Complaint Management System API
+	registerRootRoutes()
 }

@@ -1,6 +1,6 @@
 # Complaint Management System Roadmap
 
-> Last Updated: 07 July 2026
+> Last Updated: 22 July 2026
 
 ---
 
@@ -222,12 +222,12 @@ Deploy the complete backend before starting frontend development.
 
 ### Deployment
 
-- [✅] Dockerize the application using Dockerfile and Docker Compose
-- [ ] Deploy PostgreSQL Database
-- [ ] Deploy Go Backend
-- [ ] Configure Environment Variables
-- [ ] Verify Live APIs
-- [ ] Production Testing
+- [✅] Dockerize the application
+- [✅] Deploy PostgreSQL Database (Neon)
+- [✅] Deploy Go Backend (Render)
+- [✅] Configure Environment Variables
+- [✅] Verify Live APIs
+- [✅] Production Testing
 
 ---
 
@@ -395,7 +395,7 @@ The backend should only be added to the resume after completing all of the follo
 
 ## Current Branch
 
-feature/develop
+main
 
 ---
 
