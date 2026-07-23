@@ -75,6 +75,18 @@ func CreateComplaint(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetMyComplaints lists all complaints created by the logged-in user.
+//
+// # GetMyComplaints godoc
+//
+// @Summary Get My Complaints
+// @Description Get all complaints created by the authenticated user
+// @Tags Complaints
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} utils.APIResponse
+// @Failure 401 {object} utils.APIResponse
+// @Failure 500 {object} utils.APIResponse
+// @Router /complaints [get]
 func GetMyComplaints(w http.ResponseWriter, r *http.Request) {
 
 	// Retrieve the user ID from the request context.

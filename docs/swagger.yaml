@@ -350,6 +350,28 @@ paths:
       tags:
       - Admin
   /complaints:
+    get:
+      description: Get all complaints created by the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get My Complaints
+      tags:
+      - Complaints
     post:
       consumes:
       - application/json

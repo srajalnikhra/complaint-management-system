@@ -432,6 +432,41 @@ const docTemplate = `{
             }
         },
         "/complaints": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all complaints created by the authenticated user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Complaints"
+                ],
+                "summary": "Get My Complaints",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
